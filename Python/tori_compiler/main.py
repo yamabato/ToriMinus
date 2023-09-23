@@ -1,8 +1,7 @@
-from lexer import lexer
+from tr_lexer import tr_lexer
 
 program = """
-123+ 2.3 * 3;
-"""
+1"""
 
-tokens = lexer(program)
+tokens = tr_lexer(program)
 print(tokens)
