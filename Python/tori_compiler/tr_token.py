@@ -11,9 +11,11 @@ class TR_Token_Kind(IntEnum):
   DEC = auto()
   IDENT = auto()
   STRING = auto()
+  PUNCT = auto()
 
 class TR_Char_Type(IntEnum):
   WHITESPACE = auto()
   DIGIT = auto()
   IDENT = auto()
   DOUBLE_QUOT = auto()
+  PUNCT = auto()

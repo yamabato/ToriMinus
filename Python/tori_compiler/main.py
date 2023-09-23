@@ -1,7 +1,7 @@
 from tr_lexer import tr_lexer
 
 program = """
-"123.4561abc_"
+a()
 """
 
 tokens = tr_lexer(program)

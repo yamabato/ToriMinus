@@ -1,3 +1,4 @@
+import sys
 import string
 
 from tr_token import TR_Token, TR_Token_Kind, TR_Char_Type
@@ -6,6 +7,13 @@ DIGITS = string.digits
 LATIN_ALPHABET = string.ascii_letters
 WHITESPACE = " \t\n"
 DOUBLE_QUOT = "\""
+
+PUNCTUATORS = [
+  "+", "-", "*", "/", "%", "**",
+  "==", "!=", "<", ">", "<=", ">=",
+  "=", "+=", "-=", "*=", "/=", "%=", "**=",
+  "(", ")", "{", "}", ",",
+]
 
 # ---
 # ヘルパー関数
@@ -28,6 +36,7 @@ def check_char_type(char):
   elif char in DIGITS: return TR_Char_Type.DIGIT 
   elif char in LATIN_ALPHABET or char == "_": return TR_Char_Type.IDENT 
   elif char == DOUBLE_QUOT: return TR_Char_Type.DOUBLE_QUOT
+  elif char in PUNCTUATORS: return TR_Char_Type.PUNCT
 
 # ---
 # 各種リテラル読み込み
@@ -96,6 +105,17 @@ def read_string_literal(program, n):
   n, c = get_next_char(program, n)
   return kind, token_value, n
 
+def read_punctuator(program, n):
+  kind = TR_Token_Kind.PUNCT
+  token_value = ""
+  c = get_current_char(program, n)
+
+  while token_value + c in PUNCTUATORS:
+    token_value += c
+    n, c = get_next_char(program, n)
+    if c == "": break
+  return kind, token_value, n
+
 # ---
 
 def tr_lexer(program):
@@ -125,10 +145,21 @@ def tr_lexer(program):
       token = TR_Token(kind, value)
       tokens.append(token)
 
+    # Token_Kind.STRING
     elif char_type == TR_Char_Type.DOUBLE_QUOT:
       kind, value, n = read_string_literal(program, n)
       token = TR_Token(kind, value)
       tokens.append(token)
+
+    # Token_Kind.PUNCT
+    elif char_type == TR_Char_Type.PUNCT:
+      kind, value, n = read_punctuator(program, n)
+      token = TR_Token(kind, value)
+      tokens.append(token)
+
+    else:
+      print("ERROR")
+      sys.exit()
 
   return tokens 
 
