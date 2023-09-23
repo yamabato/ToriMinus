@@ -18,4 +18,4 @@ class TR_Char_Type(IntEnum):
   DIGIT = auto()
   IDENT = auto()
   DOUBLE_QUOT = auto()
-  PUNCT = auto()
+  PUNCT_LETTER = auto()

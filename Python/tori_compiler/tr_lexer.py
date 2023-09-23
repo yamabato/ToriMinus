@@ -8,6 +8,12 @@ LATIN_ALPHABET = string.ascii_letters
 WHITESPACE = " \t\n"
 DOUBLE_QUOT = "\""
 
+PUNCTUATOR_LETTERS = [
+  "+", "-", "*", "/", "%",
+  "=", "!", "<", ">",
+  "(", ")", "{", "}", ","
+]
+
 PUNCTUATORS = [
   "+", "-", "*", "/", "%", "**",
   "==", "!=", "<", ">", "<=", ">=",
@@ -36,7 +42,7 @@ def check_char_type(char):
   elif char in DIGITS: return TR_Char_Type.DIGIT 
   elif char in LATIN_ALPHABET or char == "_": return TR_Char_Type.IDENT 
   elif char == DOUBLE_QUOT: return TR_Char_Type.DOUBLE_QUOT
-  elif char in PUNCTUATORS: return TR_Char_Type.PUNCT
+  elif char in PUNCTUATOR_LETTERS: return TR_Char_Type.PUNCT_LETTER
 
 # ---
 # 各種リテラル読み込み
@@ -110,7 +116,7 @@ def read_punctuator(program, n):
   token_value = ""
   c = get_current_char(program, n)
 
-  while token_value + c in PUNCTUATORS:
+  while check_char_type(c) == TR_Char_Type.PUNCT_LETTER: 
     token_value += c
     n, c = get_next_char(program, n)
     if c == "": break
@@ -152,7 +158,7 @@ def tr_lexer(program):
       tokens.append(token)
 
     # Token_Kind.PUNCT
-    elif char_type == TR_Char_Type.PUNCT:
+    elif char_type == TR_Char_Type.PUNCT_LETTER:
       kind, value, n = read_punctuator(program, n)
       token = TR_Token(kind, value)
       tokens.append(token)
