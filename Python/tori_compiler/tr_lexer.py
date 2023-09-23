@@ -8,6 +8,7 @@ LATIN_ALPHABET = string.ascii_letters
 WHITESPACE = " \t\n"
 DOUBLE_QUOT = "\""
 COMMENT = "~"
+PYFUNC_PREFIX = "#"
 
 PUNCTUATOR_LETTERS = [
   "+", "-", "*", "/", "%",
@@ -44,6 +45,7 @@ def check_char_type(char):
   elif char in WHITESPACE: return TR_Char_Type.WHITESPACE 
   elif char in DIGITS: return TR_Char_Type.DIGIT 
   elif char in LATIN_ALPHABET or char == "_": return TR_Char_Type.IDENT 
+  elif char in PYFUNC_PREFIX: return TR_Char_Type.PYFUNC_PREFIX
   elif char == DOUBLE_QUOT: return TR_Char_Type.DOUBLE_QUOT
   elif char in PUNCTUATOR_LETTERS: return TR_Char_Type.PUNCT_LETTER
   if char == COMMENT: return TR_Char_Type.COMMENT
@@ -155,6 +157,14 @@ def tr_lexer(program):
     elif char_type == TR_Char_Type.DIGIT or c == ".":
       kind, value, n = read_numerical_literal(program, n)
       token = TR_Token(kind, value)
+      tokens.append(token)
+    
+    # Token_Kind.PYFUNC_IDENT
+    elif char_type == TR_Char_Type.PYFUNC_PREFIX:
+      n, c = get_next_char(program, n)
+      _, value, n = read_ident_literal(program, n)
+      kind = TR_Token_Kind.PYFUNC_IDENT
+      token = TR_Token(kind, "#" + value)
       tokens.append(token)
 
     # Token_Kind.IDENT
