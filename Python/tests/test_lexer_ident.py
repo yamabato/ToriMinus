@@ -44,6 +44,10 @@ def test_lexer_IDENT_08():
   assert token_kind_list == [TR_Token_Kind.INT, TR_Token_Kind.IDENT] 
   assert token_value_list == ["123", "abc"] 
 
+def test_lexer_IDENT_09():
+  token_kind_list, token_value_list = get_tokens_info("Abc") 
+  assert token_kind_list == [TR_Token_Kind.IDENT] 
+  assert token_value_list == ["Abc"] 
 
 # ---
 
