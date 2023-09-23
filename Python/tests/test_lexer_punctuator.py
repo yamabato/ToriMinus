@@ -20,8 +20,8 @@ def test_lexer_PUNCT_03():
   assert token_value_list == ["=", "+=", "-=", "*=", "/=", "%=", "**="] 
 
 def test_lexer_PUNCT_04():
-  token_kind_list, token_value_list = get_tokens_info("( ) { } ,") 
-  assert token_kind_list == [TR_Token_Kind.PUNCT, TR_Token_Kind.PUNCT, TR_Token_Kind.PUNCT, TR_Token_Kind.PUNCT, TR_Token_Kind.PUNCT,] 
-  assert token_value_list == ["(", ")", "{", "}", ","] 
+  token_kind_list, token_value_list = get_tokens_info("( ) { } , ;") 
+  assert token_kind_list == [TR_Token_Kind.PUNCT, TR_Token_Kind.PUNCT, TR_Token_Kind.PUNCT, TR_Token_Kind.PUNCT, TR_Token_Kind.PUNCT, TR_Token_Kind.PUNCT] 
+  assert token_value_list == ["(", ")", "{", "}", ",", ";"] 
 
 # ---
