@@ -1,6 +1,6 @@
 import string
 
-from token import Token, Token_Kind
+from tr_token import TR_Token, TR_Token_Kind
 
 NUMBER = string.digits
 WHITESPACE = " \t\n"
@@ -11,7 +11,7 @@ def next_char(program, n):
   n += 1
   return n, program[n]
 
-def lexer(program):
+def tr_lexer(program):
   program_length = len(program)
 
   tokens = []
@@ -26,7 +26,7 @@ def lexer(program):
       while c in NUMBER:
         token_value += c
         n, c = next_char(program, n)
-      token = Token(Token_Kind.INT, token_value)
+      token = TR_Token(TR_Token_Kind.INT, token_value)
       tokens.append(token)
 
     n, c = next_char(program, n)

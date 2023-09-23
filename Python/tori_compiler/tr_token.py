@@ -1,11 +1,11 @@
 from enum import IntEnum, auto
 
-class Token:
+class TR_Token:
   def __init__(self, kind, value):
     self.kind = kind
     self.value = value
 
 
-class Token_Kind(IntEnum):
+class TR_Token_Kind(IntEnum):
   INT = auto()
   DEC = auto()
