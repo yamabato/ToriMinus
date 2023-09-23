@@ -6,6 +6,6 @@ class Token:
     self.value = value
 
 
-class Token_Type(IntEnum):
+class Token_Kind(IntEnum):
   INT = auto()
   DEC = auto()
