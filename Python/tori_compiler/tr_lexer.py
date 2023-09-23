@@ -49,9 +49,9 @@ def read_numerical_literal(program, n):
     n, c = get_next_char(program, n)
 
   _, digits, n = read_digits(program, n)
-  token_value = digits
+  token_value += digits
   
-  return kind, digits, n
+  return kind, token_value, n
 
 # ---
 
