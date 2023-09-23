@@ -7,6 +7,7 @@ DIGITS = string.digits
 LATIN_ALPHABET = string.ascii_letters
 WHITESPACE = " \t\n"
 DOUBLE_QUOT = "\""
+COMMENT = "~"
 
 PUNCTUATOR_LETTERS = [
   "+", "-", "*", "/", "%",
@@ -45,6 +46,7 @@ def check_char_type(char):
   elif char in LATIN_ALPHABET or char == "_": return TR_Char_Type.IDENT 
   elif char == DOUBLE_QUOT: return TR_Char_Type.DOUBLE_QUOT
   elif char in PUNCTUATOR_LETTERS: return TR_Char_Type.PUNCT_LETTER
+  if char == COMMENT: return TR_Char_Type.COMMENT
 
 # ---
 # 各種リテラル読み込み
@@ -124,6 +126,14 @@ def read_punctuator(program, n):
     if c == "": break
   return kind, token_value, n
 
+def skip_comment(program, n):
+  n, c = get_next_char(program, n)
+  while check_char_type(c) != TR_Char_Type.COMMENT:
+    n, c = get_next_char(program, n)
+  n, _ = get_next_char(program, n)
+  
+  return n
+
 # ---
 
 def tr_lexer(program):
@@ -165,6 +175,9 @@ def tr_lexer(program):
       token = TR_Token(kind, value)
       tokens.append(token)
 
+    elif char_type == TR_Char_Type.COMMENT:
+      n = skip_comment(program, n)
+    
     else:
       print("ERROR")
       sys.exit()
