@@ -1,8 +1,9 @@
 import string
 
-from tr_token import TR_Token, TR_Token_Kind
+from tr_token import TR_Token, TR_Token_Kind, TR_Char_Type
 
-NUMBER = string.digits
+DIGITS = string.digits
+LATIN_ALPHABET = string.ascii_letters
 WHITESPACE = " \t\n"
 
 # ---
@@ -18,8 +19,10 @@ def get_next_char(program, n):
 
 def check_char_type(char):
   if char == "": return None
-
-  elif char in NUMBER: return "NUMBER"
+  
+  elif char in WHITESPACE: return TR_Char_Type.WHITESPACE 
+  elif char in DIGITS: return TR_Char_Type.DIGIT 
+  elif char in LATIN_ALPHABET or char == "_": return TR_Char_Type.IDENT 
 
 # ---
 # 各種リテラル読み込み
@@ -28,7 +31,7 @@ def read_digits(program, n):
   token_value = ""
   c = get_current_char(program, n)
 
-  while check_char_type(c) == "NUMBER": 
+  while check_char_type(c) == TR_Char_Type.DIGIT: 
     token_value += c
     n, c = get_next_char(program, n)
 
@@ -53,6 +56,18 @@ def read_numerical_literal(program, n):
   
   return kind, token_value, n
 
+def read_ident_literal(program, n):
+  kind = TR_Token_Kind.IDENT
+  token_value = ""
+
+  c = get_current_char(program, n)
+
+  while check_char_type(c) in [TR_Char_Type.IDENT, TR_Char_Type.DIGIT]: 
+    token_value += c
+    n, c = get_next_char(program, n)
+
+  return kind, token_value, n
+
 # ---
 
 def tr_lexer(program):
@@ -64,13 +79,24 @@ def tr_lexer(program):
   while n < program_length:
     c = get_current_char(program, n)
 
+    char_type = check_char_type(c)
+   
+    # 読み飛ばし 
+    if char_type == TR_Char_Type.WHITESPACE: 
+      n, c = get_next_char(program, n)
+
     # Token_Kind.INT, Token_Kind.DEC
-    if c in NUMBER or c == ".":
+    elif char_type == TR_Char_Type.DIGIT or c == ".":
       kind, value, n = read_numerical_literal(program, n)
       token = TR_Token(kind, value)
       tokens.append(token)
 
-    n, c = get_next_char(program, n)
+    # Token_Kind.IDENT
+    elif char_type == TR_Char_Type.IDENT: 
+      kind, value, n = read_ident_literal(program, n)
+      print(value)
+      token = TR_Token(kind, value)
+      tokens.append(token)
 
   return tokens 
 

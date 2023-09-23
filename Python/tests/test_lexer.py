@@ -1,10 +1,4 @@
-import os
-import sys
-
-sys.path.append(os.path.join(os.getcwd(), "tori_compiler/"))
-
-from tr_lexer import tr_lexer
-from tr_token import TR_Token, TR_Token_Kind
+from tori_test import *
 
 # ---
 # ヘルパー関数類
@@ -84,7 +78,7 @@ def test_lexer_DEC_06():
   assert token_kind_list == [TR_Token_Kind.DEC, TR_Token_Kind.DEC] 
   assert token_value_list == ["12.", ".987"] 
   
-def test_lexer_DEC_06():
+def test_lexer_DEC_07():
   token_kind_list, token_value_list = get_tokens_info("12.3 .987")
   assert token_kind_list == [TR_Token_Kind.DEC, TR_Token_Kind.DEC] 
   assert token_value_list == ["12.3", ".987"] 

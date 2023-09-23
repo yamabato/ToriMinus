@@ -9,3 +9,9 @@ class TR_Token:
 class TR_Token_Kind(IntEnum):
   INT = auto()
   DEC = auto()
+  IDENT = auto()
+
+class TR_Char_Type(IntEnum):
+  WHITESPACE = auto()
+  DIGIT = auto()
+  IDENT = auto()
