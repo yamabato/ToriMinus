@@ -85,6 +85,13 @@ def parse_unary(tokens, n):
 def parse_power(tokens, n):
   node, n = parse_factor(tokens, n)
 
+  while True:
+    token = get_current_token(tokens, n) 
+    if token.kind == TR_Token_Kind.PUNCT and token.value == "**":
+      right, n = parse_factor(tokens, n+1)
+      node = make_binary_operation_node(TR_Node_Kind.POWER, node, right)
+    else: break
+
   return node, n
 
 def parse_factor(tokens, n):
