@@ -53,6 +53,13 @@ def parse_add_sub(tokens, n):
 def parse_mul_div(tokens, n):
   node, n = parse_unary(tokens, n)
 
+  while True:
+    token = get_current_token(tokens, n) 
+    if token.kind == TR_Token_Kind.PUNCT and token.value == "*":
+      right, n = parse_unary(tokens, n+1)
+      node = make_binary_operation_node(TR_Node_Kind.MUL, node, right)
+    else: break
+
   return node, n
 
 def parse_unary(tokens, n):

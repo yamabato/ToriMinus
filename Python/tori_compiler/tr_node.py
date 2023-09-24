@@ -13,3 +13,4 @@ class TR_Node_Kind(IntEnum):
   DEC = auto()
 
   ADD = auto()
+  MUL = auto()
