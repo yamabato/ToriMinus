@@ -1,3 +1,5 @@
+import sys
+
 from tr_token import TR_Token, TR_Token_Kind
 from tr_node import TR_Node, TR_Node_Kind
 
@@ -10,9 +12,21 @@ def get_current_token(tokens, n):
 
 def get_next_token(tokens, n):
   n += 1
-  return n, get_current_token(tokens, n)
+  return get_current_token(tokens, n), n
+
+def peek_next_token(tokens, n):
+  return get_current_token(tokens, n+1)
+
+def make_binary_operation_node(kind,left, right):
+  node = TR_Node()
+  node.kind = kind
+  node.right = right
+  node.left = left
+
+  return node
 
 # ---
+# 各種構文の解析
 
 def parse_expression(tokens, n):
   node, n = parse_comparison(tokens, n) 
@@ -26,6 +40,15 @@ def parse_comparison(tokens, n):
 
 def parse_add_sub(tokens, n):
   node, n = parse_mul_div(tokens, n)
+
+  token = get_current_token(tokens, n) 
+  if token.kind != TR_Token_Kind.PUNCT:
+    print("ERROR")
+    sys.exit()
+
+  if token.value == "+":
+    right, n = parse_mul_div(tokens, n+1)
+    node = make_binary_operation_node(TR_Node_Kind.ADD, node, right)
 
   return node, n
 

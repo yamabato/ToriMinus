@@ -5,9 +5,9 @@ program = """
 1+2;
 """
 
-program = "1"
+program = "1+2"
 
 tokens = tr_lexer(program)
 trees = tr_parser(tokens)
 print(tokens)
-print(trees[0])
+print(trees)
