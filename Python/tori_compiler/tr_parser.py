@@ -187,6 +187,8 @@ def parse_def_expressions(tokens, n):
 def parse_define_function(tokens, n):
   node = TR_Node()
   node.kind = TR_Node_Kind.DEF
+  node.args = []
+  node.exprs = []
 
   n += 2
   args, n = parse_arg_list(tokens, n)
@@ -202,6 +204,7 @@ def parse_define_function(tokens, n):
     sys.exit()
 
   exprs, n = parse_def_expressions(tokens, n)    
+  node.exprs = exprs
 
   return node, n
 
