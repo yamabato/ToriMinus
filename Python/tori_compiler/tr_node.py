@@ -21,6 +21,9 @@ class TR_Node_Kind(IntEnum):
   CALL = auto()
   DEF = auto()
 
+  ASSIGN = auto()
+  ASSIGN_ADD = auto()
+
   ADD = auto()
   MUL = auto()
 

@@ -3,6 +3,16 @@ import sys
 from tr_token import TR_Token, TR_Token_Kind
 from tr_node import TR_Node, TR_Node_Kind
 
+
+ASSIGNMENT_OPERS = [
+  "=", "+=", "-=", "*=", "/=", "%=", "**=",
+]
+
+ASSIGN_OPER_KIND = {
+  "=": TR_Node_Kind.ASSIGN,
+  "+=": TR_Node_Kind.ASSIGN_ADD,
+}
+
 # ---
 # ヘルパー関数
 
@@ -36,8 +46,27 @@ def make_unary_node(kind, right):
 # 各種構文の解析
 
 def parse_expression(tokens, n):
-  node, n = parse_comparison(tokens, n) 
+  node, n = parse_assignment(tokens, n) 
 
+  return node, n
+
+def parse_assignment(tokens, n):
+  token = get_current_token(tokens, n)
+  next_token = peek_next_token(tokens, n)
+
+  if token.kind == TR_Token_Kind.IDENT and \
+      next_token.kind == TR_Token_Kind.PUNCT and next_token.value in ASSIGNMENT_OPERS:
+    name = token
+    expr, n = parse_expression(tokens, n+2)
+
+    node = TR_Node()
+    node.kind = ASSIGN_OPER_KIND[next_token.value]
+    node.name = name
+    node.expr = expr 
+
+  else:
+    node, n = parse_comparison(tokens, n)
+  
   return node, n
 
 def parse_comparison(tokens, n):
