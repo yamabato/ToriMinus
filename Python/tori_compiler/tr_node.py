@@ -24,6 +24,8 @@ class TR_Node_Kind(IntEnum):
   ASSIGN = auto()
   ASSIGN_ADD = auto()
 
+  EQUAL = auto()
+
   ADD = auto()
   MUL = auto()
 

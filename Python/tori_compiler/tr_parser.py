@@ -13,6 +13,14 @@ ASSIGN_OPER_KIND = {
   "+=": TR_Node_Kind.ASSIGN_ADD,
 }
 
+COMPARISON_OPERS = [
+  "==", "!=", "<", ">", "<=", ">=",
+]
+
+COMPARISON_OPER_KIND = {
+  "==": TR_Node_Kind.EQUAL,
+}
+
 # ---
 # ヘルパー関数
 
@@ -71,6 +79,12 @@ def parse_assignment(tokens, n):
 
 def parse_comparison(tokens, n):
   node, n = parse_add_sub(tokens, n)
+
+  token = get_current_token(tokens, n)
+  if token.kind == TR_Token_Kind.PUNCT and token.value in COMPARISON_OPERS:
+    right, n = parse_add_sub(tokens, n+1)
+    
+    node = make_binary_operation_node(COMPARISON_OPER_KIND[token.value], node, right)
 
   return node, n
 
