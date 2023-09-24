@@ -16,5 +16,5 @@
 
 　本言語のドキュメントは以下の通りです。
  
-　## [ドキュメント](https://github.com/yamabato/ToriMinus/wiki/)
+　[ドキュメント](https://github.com/yamabato/ToriMinus/wiki/)
 
