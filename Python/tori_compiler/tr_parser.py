@@ -95,7 +95,21 @@ def parse_power(tokens, n):
   return node, n
 
 def parse_factor(tokens, n):
-  node, n = parse_int(tokens, n)
+  token = get_current_token(tokens, n)
+  token_kind = token.kind
+  
+  next_token = peek_next_token(tokens, n)
+  next_token_kind = next_token.kind
+  next_token_value = next_token.value
+
+  if token_kind == TR_Node_Kind.INT:
+    node, n = parse_int(tokens, n)
+
+  elif token_kind == TR_Token_Kind.IDENT:
+    if next_token_kind == TR_Token_Kind.PUNCT and next_token_value == "(": # 関数呼び出し
+      pass
+    else:
+      node, n = parse_var(tokens, n)
 
   return node, n
 
@@ -104,6 +118,14 @@ def parse_int(tokens, n):
   node.kind = TR_Node_Kind.INT
   token = get_current_token(tokens, n)
   node.value = int(token.value)
+
+  return node, n+1
+
+def parse_var(tokens, n):
+  node = TR_Node()
+  node.kind = TR_Node_Kind.VAR
+  token = get_current_token(tokens, n)
+  node.value = token.value
 
   return node, n+1
 
@@ -124,6 +146,8 @@ def tr_parser(tokens):
     if token_kind == TR_Token_Kind.INT or token_kind == TR_Token_Kind.DEC:
       tree, n = parse_expression(tokens, n)
     elif token_kind == TR_Token_Kind.PUNCT and (token_value == "+" or token_value == "-"): 
+      tree, n = parse_expression(tokens, n)
+    elif token_kind == TR_Token_Kind.IDENT:
       tree, n = parse_expression(tokens, n)
 
     trees.append(tree)
