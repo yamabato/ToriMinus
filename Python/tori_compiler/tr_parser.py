@@ -25,6 +25,13 @@ def make_binary_operation_node(kind,left, right):
 
   return node
 
+def make_unary_node(kind, right):
+  node = TR_Node()
+  node.kind = kind
+  node.right = right
+   
+  return node
+
 # ---
 # 各種構文の解析
 
@@ -63,7 +70,15 @@ def parse_mul_div(tokens, n):
   return node, n
 
 def parse_unary(tokens, n):
-  node, n = parse_power(tokens, n)
+  token = get_current_token(tokens, n) 
+
+  if token.kind == TR_Token_Kind.PUNCT and token.value == "+":
+    node, n = parse_power(tokens, n+1)
+  elif token.kind == TR_Token_Kind.PUNCT and token.value == "-":
+    right, n = parse_power(tokens, n+1)
+    node = make_unary_node(TR_Node_Kind.MINUS, right)
+  else:
+    node, n = parse_power(tokens, n)
 
   return node, n
 
@@ -90,15 +105,19 @@ def parse_int(tokens, n):
 def tr_parser(tokens):
   tokens_count = len(tokens)
 
+  tree = None
   trees = []
   n = 0
 
   while n < tokens_count:
     token = get_current_token(tokens, n)
     token_kind = token.kind
+    token_value = token.value
 
     if token_kind == TR_Token_Kind.INT or token_kind == TR_Token_Kind.DEC:
       tree, n = parse_expression(tokens, n)
+    elif token_kind == TR_Token_Kind.PUNCT and (token_value == "+" or token_value == "-"): 
+      tree, n = parse_unary(tokens, n)
 
     trees.append(tree)
       
