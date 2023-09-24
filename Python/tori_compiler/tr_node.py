@@ -7,11 +7,16 @@ class TR_Node:
   right = None
 
   value = None
+  
+  name = None
+  args = None
 
 class TR_Node_Kind(IntEnum):
   INT = auto()
   DEC = auto()
   VAR = auto()
+
+  CALL = auto()
 
   ADD = auto()
   MUL = auto()

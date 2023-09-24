@@ -107,7 +107,7 @@ def parse_factor(tokens, n):
 
   elif token_kind == TR_Token_Kind.IDENT:
     if next_token_kind == TR_Token_Kind.PUNCT and next_token_value == "(": # 関数呼び出し
-      pass
+      node, n = parse_call(tokens, n)
     else:
       node, n = parse_var(tokens, n)
 
@@ -128,6 +128,40 @@ def parse_var(tokens, n):
   node.value = token.value
 
   return node, n+1
+
+def parse_call(tokens, n):
+  name = get_current_token(tokens, n)
+  args = []
+
+  n += 2
+  while True:
+    token = get_current_token(tokens, n)
+    token_kind = token.kind
+    token_value = token.value
+
+    if token_kind == TR_Token_Kind.PUNCT and token_value == ")": break
+
+    else:
+      arg, n = parse_expression(tokens, n)
+      args.append(arg)
+
+    token = get_current_token(tokens, n)
+    token_kind = token.kind
+    token_value = token.value
+      
+    if token_kind == TR_Token_Kind.PUNCT and token_value == ",":
+      n += 1
+    elif token_kind == TR_Token_Kind.PUNCT and token_value == ")": break
+    else:
+      print("ERROR")
+      sys.exit()
+  
+  n += 1
+  node = TR_Node()
+  node.name = name
+  node.args = args
+  
+  return node, n
 
 # ---
 
