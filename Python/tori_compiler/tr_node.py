@@ -11,12 +11,15 @@ class TR_Node:
   name = None
   args = None
 
+  exprs = None
+
 class TR_Node_Kind(IntEnum):
   INT = auto()
   DEC = auto()
   VAR = auto()
 
   CALL = auto()
+  DEF = auto()
 
   ADD = auto()
   MUL = auto()

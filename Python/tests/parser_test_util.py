@@ -39,6 +39,11 @@ def expand_tree(tree):
     args = ", ".join([expand_tree(arg) for arg in tree.args])
     expanded += f"CALL({name}, ({args}))"
 
+  elif node_type == TR_Node_Kind.DEF:
+    args = ", ".join([expand_tree(arg) for arg in tree.args])
+    exprs = ", ".join([expand_tree(expr) for expr in tree.exprs])
+    expanded += f"DEF(({args}), ({exprs}))"
+
   return expanded
 
 def get_expanded_code(program):

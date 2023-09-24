@@ -96,20 +96,20 @@ def parse_power(tokens, n):
 
 def parse_factor(tokens, n):
   token = get_current_token(tokens, n)
-  token_kind = token.kind
-  
   next_token = peek_next_token(tokens, n)
-  next_token_kind = next_token.kind
-  next_token_value = next_token.value
 
-  if token_kind == TR_Node_Kind.INT:
+  if token.kind == TR_Node_Kind.INT:
     node, n = parse_int(tokens, n)
 
-  elif token_kind == TR_Token_Kind.IDENT:
-    if next_token_kind == TR_Token_Kind.PUNCT and next_token_value == "(": # 関数呼び出し
+  elif token.kind == TR_Token_Kind.IDENT:
+    if next_token.kind == TR_Token_Kind.PUNCT and next_token.value == "(": # 関数呼び出し
       node, n = parse_call(tokens, n)
     else:
       node, n = parse_var(tokens, n)
+
+  elif token.kind == TR_Token_Kind.PUNCT and token.value == "{" and \
+        next_token.kind == TR_Token_Kind.PUNCT and next_token.value == "(": # 関数定義
+    node, n = parse_define_function(tokens, n)
 
   return node, n
 
@@ -129,38 +129,79 @@ def parse_var(tokens, n):
 
   return node, n+1
 
-def parse_call(tokens, n):
-  name = get_current_token(tokens, n)
+def parse_arg_list(tokens, n):
   args = []
 
-  n += 2
-  while True:
+  while n < len(tokens):
     token = get_current_token(tokens, n)
-    token_kind = token.kind
-    token_value = token.value
-
-    if token_kind == TR_Token_Kind.PUNCT and token_value == ")": break
+    if token.kind == TR_Token_Kind.PUNCT and token.value == ")": break
 
     else:
       arg, n = parse_expression(tokens, n)
       args.append(arg)
 
     token = get_current_token(tokens, n)
-    token_kind = token.kind
-    token_value = token.value
-      
-    if token_kind == TR_Token_Kind.PUNCT and token_value == ",":
+    if token.kind == TR_Token_Kind.PUNCT and token.value == ",":
       n += 1
-    elif token_kind == TR_Token_Kind.PUNCT and token_value == ")": break
+    elif token.kind == TR_Token_Kind.PUNCT and token.value == ")": break
     else:
       print("ERROR")
       sys.exit()
-  
+
+  return args, n
+
+def parse_call(tokens, n):
+  name = get_current_token(tokens, n)
+  args = []
+
+  n += 2
+  args, n = parse_arg_list(tokens, n) 
+
   n += 1
   node = TR_Node()
   node.kind = TR_Node_Kind.CALL
   node.name = name
   node.args = args
+
+  return node, n
+
+def parse_def_expressions(tokens, n):
+  exprs = []
+
+  while n < len(tokens):
+    token = get_current_token(tokens, n)
+    if token.kind == TR_Token_Kind.PUNCT and token.value == "}": break
+ 
+    expr, n = parse_expression(tokens, n)
+    exprs.append(expr)
+
+    token = get_current_token(tokens, n)
+    if token.kind == TR_Token_Kind.PUNCT and token.value == ",": n += 1 
+    elif token.kind == TR_Token_Kind.PUNCT and token.value == "}": break
+    else:
+      print("ERROR")
+      sys.exit()
+
+  return exprs, n+1
+
+def parse_define_function(tokens, n):
+  node = TR_Node()
+  node.kind = TR_Node_Kind.DEF
+
+  n += 2
+  args, n = parse_arg_list(tokens, n)
+  node.args = args
+
+  n += 1
+
+  token = get_current_token(tokens, n)
+  if token.kind == TR_Token_Kind.PUNCT and token.value == "}": return node, n+1
+  elif token.kind == TR_Token_Kind.PUNCT and token.value == ",": n += 1
+  else:
+    print("ERROR")
+    sys.exit()
+
+  exprs, n = parse_def_expressions(tokens, n)    
 
   return node, n
 
@@ -175,19 +216,20 @@ def tr_parser(tokens):
 
   while n < tokens_count:
     token = get_current_token(tokens, n)
-    token_kind = token.kind
-    token_value = token.value
+    next_token = peek_next_token(tokens, n)
 
-    next_token = get_current_token(tokens, n)
-    next_token_kind = next_token.kind
-    next_token_value = next_token.value
-
-    if token_kind == TR_Token_Kind.INT or token_kind == TR_Token_Kind.DEC:
+    if token.kind == TR_Token_Kind.INT or token.kind == TR_Token_Kind.DEC:
       tree, n = parse_expression(tokens, n)
-    elif token_kind == TR_Token_Kind.PUNCT and (token_value == "+" or token_value == "-"): 
+    elif token.kind == TR_Token_Kind.PUNCT and (token.value == "+" or token.value == "-"): 
       tree, n = parse_expression(tokens, n)
-    elif token_kind == TR_Token_Kind.IDENT:
+    elif token.kind == TR_Token_Kind.IDENT:
       tree, n = parse_expression(tokens, n)
+    elif token.kind == TR_Token_Kind.PUNCT and token.value == "{" and \
+          next_token.kind == TR_Token_Kind.PUNCT and next_token.value == "(":
+      tree, n = parse_define_function(tokens, n)
+    else:
+      print("ERROR", token.value, token.kind, next_token.value, next_token.kind)
+      sys.exit()
 
     trees.append(tree)
       
