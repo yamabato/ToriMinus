@@ -34,6 +34,12 @@ def expand_tree(tree):
   elif node_type == TR_Node_Kind.POWER:
     expanded += f"POWER({expand_tree(tree.left)}, {expand_tree(tree.right)})"
 
+  elif node_type == TR_Node_Kind.ASSIGN:
+    expanded += f"ASSIGN({expand_tree(tree.name)}, {expand_tree(tree.expr)})"
+
+  elif node_type == TR_Node_Kind.ASSIGN_ADD:
+    expanded += f"ASSIGN_ADD({expand_tree(tree.name)}, {expand_tree(tree.expr)})"
+
   elif node_type == TR_Node_Kind.CALL:
     name = expand_tree(tree.name)
     args = ", ".join([expand_tree(arg) for arg in tree.args])
