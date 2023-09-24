@@ -25,6 +25,9 @@ def expand_tree(tree):
   elif node_type == TR_Node_Kind.MUL:
     expanded += f"MUL({expand_tree(tree.left)}, {expand_tree(tree.right)})"
 
+  elif node_type == TR_Node_Kind.MINUS:
+    expanded += f"MINUS({expand_tree(tree.right)})"
+
   return expanded
 
 def get_expanded_code(program):
