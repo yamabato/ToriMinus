@@ -10,4 +10,4 @@ program = "1"
 tokens = tr_lexer(program)
 trees = tr_parser(tokens)
 print(tokens)
-print(trees)
+print(trees[0])
