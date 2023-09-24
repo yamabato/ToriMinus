@@ -158,9 +158,10 @@ def parse_call(tokens, n):
   
   n += 1
   node = TR_Node()
+  node.kind = TR_Node_Kind.CALL
   node.name = name
   node.args = args
-  
+
   return node, n
 
 # ---
@@ -176,6 +177,10 @@ def tr_parser(tokens):
     token = get_current_token(tokens, n)
     token_kind = token.kind
     token_value = token.value
+
+    next_token = get_current_token(tokens, n)
+    next_token_kind = next_token.kind
+    next_token_value = next_token.value
 
     if token_kind == TR_Token_Kind.INT or token_kind == TR_Token_Kind.DEC:
       tree, n = parse_expression(tokens, n)

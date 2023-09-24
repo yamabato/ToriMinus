@@ -5,7 +5,7 @@ program = """
 1+2;
 """
 
-program = "abc(1,2)"
+program = "abc()"
 
 tokens = tr_lexer(program)
 trees = tr_parser(tokens)

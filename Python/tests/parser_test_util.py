@@ -34,6 +34,11 @@ def expand_tree(tree):
   elif node_type == TR_Node_Kind.POWER:
     expanded += f"POWER({expand_tree(tree.left)}, {expand_tree(tree.right)})"
 
+  elif node_type == TR_Node_Kind.CALL:
+    name = expand_tree(tree.name)
+    args = ", ".join([expand_tree(arg) for arg in tree.args])
+    expanded += f"CALL({name}, ({args}))"
+
   return expanded
 
 def get_expanded_code(program):
