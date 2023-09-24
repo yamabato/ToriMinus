@@ -126,6 +126,13 @@ def read_punctuator(program, n):
     token_value += c
     n, c = get_next_char(program, n)
     if c == "": break
+  
+  for i in range(len(token_value), 0, -1):
+    if token_value[:i] in PUNCTUATORS:
+      token_value = token_value[:i]
+      break
+    n -= 1
+
   return kind, token_value, n
 
 def skip_comment(program, n):
