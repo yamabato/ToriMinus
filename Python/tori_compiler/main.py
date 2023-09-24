@@ -5,8 +5,8 @@ program = """
 1+2;
 """
 
-program = "a==b"
+program = "(1+1)*2"
 
 tokens = tr_lexer(program)
 trees = tr_parser(tokens)
-print(trees[0].right.kind)
+print(trees)

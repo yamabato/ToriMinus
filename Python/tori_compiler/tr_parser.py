@@ -144,6 +144,10 @@ def parse_factor(tokens, n):
   if token.kind == TR_Node_Kind.INT:
     node, n = parse_int(tokens, n)
 
+  if token.kind == TR_Token_Kind.PUNCT and token.value == "(":
+    node, n = parse_expression(tokens, n+1)
+    n += 1
+
   elif token.kind == TR_Token_Kind.IDENT:
     if next_token.kind == TR_Token_Kind.PUNCT and next_token.value == "(": # 関数呼び出し
       node, n = parse_call(tokens, n)
@@ -264,15 +268,17 @@ def tr_parser(tokens):
     token = get_current_token(tokens, n)
     next_token = peek_next_token(tokens, n)
 
-    if token.kind == TR_Token_Kind.INT or token.kind == TR_Token_Kind.DEC:
+    if token.kind == TR_Token_Kind.INT or token.kind == TR_Token_Kind.DEC: # 数値
       tree, n = parse_expression(tokens, n)
-    elif token.kind == TR_Token_Kind.PUNCT and (token.value == "+" or token.value == "-"): 
+    elif token.kind == TR_Token_Kind.IDENT: # 変数
       tree, n = parse_expression(tokens, n)
-    elif token.kind == TR_Token_Kind.IDENT:
+    elif token.kind == TR_Token_Kind.PUNCT and (token.value == "+" or token.value == "-"): # 単項演算子
       tree, n = parse_expression(tokens, n)
     elif token.kind == TR_Token_Kind.PUNCT and token.value == "{" and \
-          next_token.kind == TR_Token_Kind.PUNCT and next_token.value == "(":
+          next_token.kind == TR_Token_Kind.PUNCT and next_token.value == "(": # 関数定義
       tree, n = parse_define_function(tokens, n)
+    elif token.kind == TR_Token_Kind.PUNCT and token.value == "(": # 括弧
+      tree, n = parse_expression(tokens, n)
     else:
       print("ERROR", token.value, token.kind, next_token.value, next_token.kind)
       sys.exit()
