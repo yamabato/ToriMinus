@@ -19,6 +19,9 @@ def expand_tree(tree):
   if node_type == TR_Node_Kind.INT:
     expanded += f"INT({tree.value})"
 
+  elif node_type == TR_Node_Kind.ADD:
+    expanded += f"ADD({expand_tree(tree.left)}, {expand_tree(tree.right)})"
+
   return expanded
 
 def get_expanded_code(program):

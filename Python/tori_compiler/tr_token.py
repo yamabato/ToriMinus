@@ -1,7 +1,7 @@
 from enum import IntEnum, auto
 
 class TR_Token:
-  def __init__(self, kind, value):
+  def __init__(self, kind=None, value=None):
     self.kind = kind
     self.value = value
 

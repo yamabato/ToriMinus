@@ -41,14 +41,12 @@ def parse_comparison(tokens, n):
 def parse_add_sub(tokens, n):
   node, n = parse_mul_div(tokens, n)
 
-  token = get_current_token(tokens, n) 
-  if token.kind != TR_Token_Kind.PUNCT:
-    print("ERROR")
-    sys.exit()
-
-  if token.value == "+":
-    right, n = parse_mul_div(tokens, n+1)
-    node = make_binary_operation_node(TR_Node_Kind.ADD, node, right)
+  while True:
+    token = get_current_token(tokens, n) 
+    if token.kind == TR_Token_Kind.PUNCT and token.value == "+":
+      right, n = parse_mul_div(tokens, n+1)
+      node = make_binary_operation_node(TR_Node_Kind.ADD, node, right)
+    else: break
 
   return node, n
 
