@@ -20,4 +20,16 @@ def test_parser_UNARY_04():
   expanded_code = get_expanded_code("-10")
   assert expanded_code == "MINUS(INT(10))" 
 
+def test_parser_UNARY_05():
+  expanded_code = get_expanded_code("1 + -10")
+  assert expanded_code == "ADD(INT(1), MINUS(INT(10)))" 
+
+def test_parser_UNARY_06():
+  expanded_code = get_expanded_code("+11 + -10")
+  assert expanded_code == "ADD(INT(11), MINUS(INT(10)))" 
+
+def test_parser_UNARY_07():
+  expanded_code = get_expanded_code("-11 + -10 + -12")
+  assert expanded_code == "ADD(ADD(MINUS(INT(11)), MINUS(INT(10))), MINUS(INT(12)))" 
+
 # ---

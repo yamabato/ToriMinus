@@ -117,7 +117,7 @@ def tr_parser(tokens):
     if token_kind == TR_Token_Kind.INT or token_kind == TR_Token_Kind.DEC:
       tree, n = parse_expression(tokens, n)
     elif token_kind == TR_Token_Kind.PUNCT and (token_value == "+" or token_value == "-"): 
-      tree, n = parse_unary(tokens, n)
+      tree, n = parse_expression(tokens, n)
 
     trees.append(tree)
       
