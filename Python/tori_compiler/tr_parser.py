@@ -293,6 +293,11 @@ def tr_parser(tokens):
     else:
       print("ERROR", token.value, token.kind, next_token.value, next_token.kind)
       sys.exit()
+    
+    token = get_current_token(tokens, n)
+    if token.kind != TR_Token_Kind.PUNCT or token.value != ";":
+      print("ERROR")
+      sys.exit()
 
     trees.append(tree)
       
