@@ -22,6 +22,9 @@ def expand_tree(tree):
   elif node_type == TR_Node_Kind.DEC:
     expanded += f"DEC({tree.value})"
 
+  elif node_type == TR_Node_Kind.STR:
+    expanded += f"STR({tree.value})"
+
   elif node_type == TR_Node_Kind.VAR:
     expanded += f"VAR({tree.value})"
 
