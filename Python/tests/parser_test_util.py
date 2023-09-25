@@ -19,7 +19,10 @@ def expand_tree(tree):
   if node_type == TR_Node_Kind.INT:
     expanded += f"INT({tree.value})"
 
-  if node_type == TR_Node_Kind.VAR:
+  elif node_type == TR_Node_Kind.DEC:
+    expanded += f"DEC({tree.value})"
+
+  elif node_type == TR_Node_Kind.VAR:
     expanded += f"VAR({tree.value})"
 
   elif node_type == TR_Node_Kind.ADD:
@@ -77,6 +80,10 @@ def expand_tree(tree):
     func = expand_tree(tree.func)
     args = ", ".join([expand_tree(arg) for arg in tree.args])
     expanded += f"CALL({func}, ({args}))"
+
+  elif node_type == TR_Node_Kind.PYFUNC_CALL:
+    args = ", ".join([expand_tree(arg) for arg in tree.args])
+    expanded += f"PYFUNC_CALL({tree.name}, ({args}))"
 
   elif node_type == TR_Node_Kind.DEF:
     args = ", ".join([expand_tree(arg) for arg in tree.args])

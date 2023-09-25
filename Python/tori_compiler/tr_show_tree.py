@@ -10,7 +10,10 @@ def pretty_node(node):
   if node_kind == TR_Node_Kind.INT:
     return str(node.value)
 
-  if node_kind == TR_Node_Kind.VAR:
+  elif node_kind == TR_Node_Kind.DEC:
+    return str(node.value)
+
+  elif node_kind == TR_Node_Kind.VAR:
     return str(node.value)
 
   elif node_kind == TR_Node_Kind.ADD:

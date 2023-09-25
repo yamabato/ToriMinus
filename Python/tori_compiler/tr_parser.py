@@ -201,6 +201,9 @@ def parse_factor(tokens, n):
   if token.kind == TR_Node_Kind.INT:
     node, n = parse_int(tokens, n)
 
+  elif token.kind == TR_Node_Kind.DEC:
+    node, n = parse_dec(tokens, n)
+
   if token.kind == TR_Token_Kind.PUNCT and token.value == "(":
     node, n = parse_expression(tokens, n+1)
     n += 1
@@ -221,6 +224,15 @@ def parse_int(tokens, n):
   node.value = int(token.value)
 
   return node, n+1
+
+def parse_dec(tokens, n):
+  node = TR_Node()
+  node.kind = TR_Node_Kind.DEC
+  token = get_current_token(tokens, n)
+  node.value = float(token.value)
+
+  return node, n+1
+
 
 def parse_var(tokens, n):
   node = TR_Node()

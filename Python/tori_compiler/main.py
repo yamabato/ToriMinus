@@ -7,7 +7,7 @@ program = """
 1+2;
 """
 
-program = "#print(123, 234,);"
+program = "#print(123, #round(1.1),);"
 
 tokens = tr_lexer(program)
 trees = tr_parser(tokens)
