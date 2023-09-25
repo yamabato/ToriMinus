@@ -17,6 +17,7 @@ class TR_Node:
 class TR_Node_Kind(IntEnum):
   INT = auto()
   DEC = auto()
+  STR = auto()
   VAR = auto()
 
   CALL = auto()

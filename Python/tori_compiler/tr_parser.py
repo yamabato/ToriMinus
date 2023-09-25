@@ -77,12 +77,12 @@ def parse_assignment(tokens, n):
 
   if token.kind == TR_Token_Kind.IDENT and \
       next_token.kind == TR_Token_Kind.PUNCT and next_token.value in ASSIGNMENT_OPERS:
-    name = token
-    expr, n = parse_expression(tokens, n+2)
+    var, n = parse_var(tokens, n)
+    expr, n = parse_expression(tokens, n+1)
 
     node = TR_Node()
     node.kind = ASSIGN_OPER_KIND[next_token.value]
-    node.name = name
+    node.var = var 
     node.expr = expr 
 
   else:
@@ -198,13 +198,19 @@ def parse_factor(tokens, n):
   token = get_current_token(tokens, n)
   next_token = peek_next_token(tokens, n)
 
-  if token.kind == TR_Node_Kind.INT:
+  if token.kind == TR_Token_Kind.INT:
     node, n = parse_int(tokens, n)
 
-  elif token.kind == TR_Node_Kind.DEC:
+  elif token.kind == TR_Token_Kind.DEC:
     node, n = parse_dec(tokens, n)
 
-  if token.kind == TR_Token_Kind.PUNCT and token.value == "(":
+  elif token.kind == TR_Token_Kind.STRING:
+    node, n = parse_str(tokens, n)
+
+  elif token.kind == TR_Token_Kind.IDENT:
+    node, n = parse_var(tokens, n)
+
+  elif token.kind == TR_Token_Kind.PUNCT and token.value == "(":
     node, n = parse_expression(tokens, n+1)
     n += 1
 
@@ -233,6 +239,13 @@ def parse_dec(tokens, n):
 
   return node, n+1
 
+def parse_str(tokens, n):
+  node = TR_Node()
+  node.kind = TR_Node_Kind.STR
+  token = get_current_token(tokens, n)
+  node.value = token.value
+
+  return node, n+1
 
 def parse_var(tokens, n):
   node = TR_Node()
@@ -319,6 +332,8 @@ def tr_parser(tokens):
     next_token = peek_next_token(tokens, n)
 
     if token.kind == TR_Token_Kind.INT or token.kind == TR_Token_Kind.DEC: # 数値
+      tree, n = parse_expression(tokens, n)
+    elif token.kind == TR_Token_Kind.STRING: # 文字列
       tree, n = parse_expression(tokens, n)
     elif token.kind == TR_Token_Kind.IDENT: # 変数
       tree, n = parse_expression(tokens, n)

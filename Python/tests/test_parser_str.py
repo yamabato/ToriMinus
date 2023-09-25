@@ -13,11 +13,11 @@ def test_parser_STR_02():
   assert expanded_code == "ADD(STR(abc), STR(def))" 
 
 def test_parser_STR_03():
-  expanded_code = get_expanded_code("f(\"str\")")
+  expanded_code = get_expanded_code("f(\"str\");")
   assert expanded_code == "CALL(VAR(f), (STR(str)))" 
 
 def test_parser_STR_04():
-  expanded_code = get_expanded_code("f(\"str\"*10)")
+  expanded_code = get_expanded_code("f(\"str\"*10);")
   assert expanded_code == "CALL(VAR(f), (MUL(STR(str), INT(10))))" 
 
 # ---
