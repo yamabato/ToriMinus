@@ -8,6 +8,7 @@ class TR_Node:
 
   value = None
   
+  func = None 
   name = None
   args = None
 

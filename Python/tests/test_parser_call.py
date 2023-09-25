@@ -24,4 +24,16 @@ def test_parser_CALL_05():
   expanded_code = get_expanded_code("f(1, g(a, b**2))")
   assert expanded_code == "CALL(VAR(f), (INT(1), CALL(VAR(g), (VAR(a), POWER(VAR(b), INT(2))))))" 
 
+def test_parser_CALL_06():
+  expanded_code = get_expanded_code("{()}()")
+  assert expanded_code == "CALL(DEF((), ()), ())" 
+
+def test_parser_CALL_07():
+  expanded_code = get_expanded_code("f = {()}()")
+  assert expanded_code == "ASSIGN(VAR(f), CALL(DEF((), ()), ()))" 
+
+def test_parser_CALL_08():
+  expanded_code = get_expanded_code("(f = {()})()")
+  assert expanded_code == "CALL(ASSIGN(VAR(f), DEF((), ())), ())" 
+
 # ---

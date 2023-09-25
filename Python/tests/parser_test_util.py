@@ -44,9 +44,9 @@ def expand_tree(tree):
     expanded += f"EQUAL({expand_tree(tree.left)}, {expand_tree(tree.right)})"
 
   elif node_type == TR_Node_Kind.CALL:
-    name = expand_tree(tree.name)
+    func = expand_tree(tree.func)
     args = ", ".join([expand_tree(arg) for arg in tree.args])
-    expanded += f"CALL({name}, ({args}))"
+    expanded += f"CALL({func}, ({args}))"
 
   elif node_type == TR_Node_Kind.DEF:
     args = ", ".join([expand_tree(arg) for arg in tree.args])

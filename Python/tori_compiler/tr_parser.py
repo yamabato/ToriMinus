@@ -25,7 +25,7 @@ COMPARISON_OPER_KIND = {
 # ヘルパー関数
 
 def get_current_token(tokens, n):
-  if len(tokens) <= n: return TR_Token()
+  if n < 0 or len(tokens) <= n: return TR_Token()
   return tokens[n]
 
 def get_next_token(tokens, n):
@@ -34,6 +34,9 @@ def get_next_token(tokens, n):
 
 def peek_next_token(tokens, n):
   return get_current_token(tokens, n+1)
+
+def get_prev_token(tokens, n):
+  return get_current_token(tokens, n-1)
 
 def make_binary_operation_node(kind,left, right):
   node = TR_Node()
@@ -126,7 +129,7 @@ def parse_unary(tokens, n):
   return node, n
 
 def parse_power(tokens, n):
-  node, n = parse_factor(tokens, n)
+  node, n = parse_func_call(tokens, n)
 
   while True:
     token = get_current_token(tokens, n) 
@@ -135,6 +138,23 @@ def parse_power(tokens, n):
       node = make_binary_operation_node(TR_Node_Kind.POWER, node, right)
     else: break
 
+  return node, n
+
+def parse_func_call(tokens, n):
+  node, n = parse_factor(tokens, n)
+
+  token = get_current_token(tokens, n)
+  if token.kind == TR_Token_Kind.PUNCT and token.value == "(":
+    args = []
+    args, n = parse_arg_list(tokens, n+1) 
+
+    n += 1
+    func = node
+    node = TR_Node()
+    node.kind = TR_Node_Kind.CALL
+    node.func = func 
+    node.args = args
+   
   return node, n
 
 def parse_factor(tokens, n):
@@ -149,17 +169,11 @@ def parse_factor(tokens, n):
     n += 1
 
   elif token.kind == TR_Token_Kind.IDENT:
-    if next_token.kind == TR_Token_Kind.PUNCT and next_token.value == "(": # 関数呼び出し
-      node, n = parse_call(tokens, n)
-    else:
-      node, n = parse_var(tokens, n)
+    node, n = parse_var(tokens, n)
 
   elif token.kind == TR_Token_Kind.PUNCT and token.value == "{" and \
         next_token.kind == TR_Token_Kind.PUNCT and next_token.value == "(": # 関数定義
     node, n = parse_define_function(tokens, n)
-
-  else:
-    print(token.value)
 
   return node, n
 
@@ -199,21 +213,6 @@ def parse_arg_list(tokens, n):
       sys.exit()
 
   return args, n
-
-def parse_call(tokens, n):
-  name = get_current_token(tokens, n)
-  args = []
-
-  n += 2
-  args, n = parse_arg_list(tokens, n) 
-
-  n += 1
-  node = TR_Node()
-  node.kind = TR_Node_Kind.CALL
-  node.name = name
-  node.args = args
-
-  return node, n
 
 def parse_def_expressions(tokens, n):
   exprs = []

@@ -36,7 +36,7 @@ def pretty_node(node):
 
   elif node_kind == TR_Node_Kind.CALL:
     args = ", ".join([pretty_node(arg) for arg in node.args])
-    return f"({pretty_node(node.name)}({args}))"
+    return f"({pretty_node(node.func)}({args}))"
 
   elif node_kind == TR_Node_Kind.DEF:
     args = ", ".join([pretty_node(arg) for arg in node.args])
