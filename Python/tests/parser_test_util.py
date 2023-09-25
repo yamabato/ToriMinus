@@ -40,6 +40,21 @@ def expand_tree(tree):
   elif node_type == TR_Node_Kind.ASSIGN_ADD:
     expanded += f"ASSIGN_ADD({expand_tree(tree.name)}, {expand_tree(tree.expr)})"
 
+  elif node_type == TR_Node_Kind.ASSIGN_SUB:
+    expanded += f"ASSIGN_SUB({expand_tree(tree.name)}, {expand_tree(tree.expr)})"
+
+  elif node_type == TR_Node_Kind.ASSIGN_MUL:
+    expanded += f"ASSIGN_MUL({expand_tree(tree.name)}, {expand_tree(tree.expr)})"
+
+  elif node_type == TR_Node_Kind.ASSIGN_DIV:
+    expanded += f"ASSIGN_DIV({expand_tree(tree.name)}, {expand_tree(tree.expr)})"
+
+  elif node_type == TR_Node_Kind.ASSIGN_MOD:
+    expanded += f"ASSIGN_MOD({expand_tree(tree.name)}, {expand_tree(tree.expr)})"
+
+  elif node_type == TR_Node_Kind.ASSIGN_POW:
+    expanded += f"ASSIGN_POW({expand_tree(tree.name)}, {expand_tree(tree.expr)})"
+
   elif node_type == TR_Node_Kind.EQUAL:
     expanded += f"EQUAL({expand_tree(tree.left)}, {expand_tree(tree.right)})"
 
