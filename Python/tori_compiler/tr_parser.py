@@ -11,6 +11,11 @@ ASSIGNMENT_OPERS = [
 ASSIGN_OPER_KIND = {
   "=": TR_Node_Kind.ASSIGN,
   "+=": TR_Node_Kind.ASSIGN_ADD,
+  "-=": TR_Node_Kind.ASSIGN_SUB,
+  "*=": TR_Node_Kind.ASSIGN_MUL,
+  "/=": TR_Node_Kind.ASSIGN_DIV,
+  "%=": TR_Node_Kind.ASSIGN_MOD,
+  "**=": TR_Node_Kind.ASSIGN_POW,
 }
 
 COMPARISON_OPERS = [
@@ -19,6 +24,11 @@ COMPARISON_OPERS = [
 
 COMPARISON_OPER_KIND = {
   "==": TR_Node_Kind.EQUAL,
+  "!=": TR_Node_Kind.NEQ,
+  "<": TR_Node_Kind.LT,
+  ">": TR_Node_Kind.GT,
+  "<=": TR_Node_Kind.LEQ,
+  ">=": TR_Node_Kind.GEQ,
 }
 
 # ---

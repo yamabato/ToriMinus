@@ -7,7 +7,7 @@ program = """
 1+2;
 """
 
-program = "(f = {()})()"
+program = "f <= {(), 1+2}()"
 
 tokens = tr_lexer(program)
 trees = tr_parser(tokens)

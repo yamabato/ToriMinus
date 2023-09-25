@@ -31,8 +31,38 @@ def pretty_node(node):
   elif node_kind == TR_Node_Kind.ASSIGN_ADD:
     return f"({pretty_node(node.name)} += {pretty_node(node.expr)})"
 
+  elif node_kind == TR_Node_Kind.ASSIGN_SUB:
+    return f"({pretty_node(node.name)} -= {pretty_node(node.expr)})"
+
+  elif node_kind == TR_Node_Kind.ASSIGN_MUL:
+    return f"({pretty_node(node.name)} *= {pretty_node(node.expr)})"
+
+  elif node_kind == TR_Node_Kind.ASSIGN_DIV:
+    return f"({pretty_node(node.name)} /= {pretty_node(node.expr)})"
+
+  elif node_kind == TR_Node_Kind.ASSIGN_MOD:
+    return f"({pretty_node(node.name)} %= {pretty_node(node.expr)})"
+
+  elif node_kind == TR_Node_Kind.ASSIGN_POW:
+    return f"({pretty_node(node.name)} **= {pretty_node(node.expr)})"
+
   elif node_kind == TR_Node_Kind.EQUAL:
     return f"({pretty_node(node.left)} == {pretty_node(node.right)})"
+
+  elif node_kind == TR_Node_Kind.NEQ:
+    return f"({pretty_node(node.left)} != {pretty_node(node.right)})"
+
+  elif node_kind == TR_Node_Kind.LT:
+    return f"({pretty_node(node.left)} < {pretty_node(node.right)})"
+
+  elif node_kind == TR_Node_Kind.GT:
+    return f"({pretty_node(node.left)} > {pretty_node(node.right)})"
+
+  elif node_kind == TR_Node_Kind.LEQ:
+    return f"({pretty_node(node.left)} <= {pretty_node(node.right)})"
+
+  elif node_kind == TR_Node_Kind.GEQ:
+    return f"({pretty_node(node.left)} >= {pretty_node(node.right)})"
 
   elif node_kind == TR_Node_Kind.CALL:
     args = ", ".join([pretty_node(arg) for arg in node.args])
@@ -41,5 +71,5 @@ def pretty_node(node):
   elif node_kind == TR_Node_Kind.DEF:
     args = ", ".join([pretty_node(arg) for arg in node.args])
     exprs = ", ".join([pretty_node(expr) for expr in node.exprs])
-    return f"{{({args}), ({exprs})}}"
+    return f"({{({args}), ({exprs})}})"
 
