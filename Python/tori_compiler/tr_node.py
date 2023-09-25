@@ -20,6 +20,7 @@ class TR_Node_Kind(IntEnum):
   VAR = auto()
 
   CALL = auto()
+  PYFUNC_CALL = auto()
   DEF = auto()
 
   ASSIGN = auto()

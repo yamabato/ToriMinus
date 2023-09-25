@@ -151,7 +151,7 @@ def parse_power(tokens, n):
   return node, n
 
 def parse_func_call(tokens, n):
-  node, n = parse_factor(tokens, n)
+  node, n = parse_pyfunc_call(tokens, n)
 
   token = get_current_token(tokens, n)
   if token.kind == TR_Token_Kind.PUNCT and token.value == "(":
@@ -165,6 +165,33 @@ def parse_func_call(tokens, n):
     node.func = func 
     node.args = args
    
+  return node, n
+
+def parse_pyfunc_call(tokens, n):
+  token = get_current_token(tokens, n)
+
+  if token.kind == TR_Token_Kind.PYFUNC_IDENT:
+    next_token, n = get_next_token(tokens, n)
+
+    if next_token.kind == TR_Token_Kind.PUNCT and next_token.value == "(":
+      name = token.value
+
+      args = []
+      args, n = parse_arg_list(tokens, n+1) 
+
+      n += 1
+      node = TR_Node()
+      node.kind = TR_Node_Kind.PYFUNC_CALL
+      node.name = name 
+      node.args = args
+ 
+    else:
+      print("ERROR")
+      sys.exit()
+
+  else:  
+    node, n = parse_factor(tokens, n)
+
   return node, n
 
 def parse_factor(tokens, n):
@@ -282,6 +309,8 @@ def tr_parser(tokens):
     if token.kind == TR_Token_Kind.INT or token.kind == TR_Token_Kind.DEC: # 数値
       tree, n = parse_expression(tokens, n)
     elif token.kind == TR_Token_Kind.IDENT: # 変数
+      tree, n = parse_expression(tokens, n)
+    elif token.kind == TR_Token_Kind.PYFUNC_IDENT: # pyfunc 
       tree, n = parse_expression(tokens, n)
     elif token.kind == TR_Token_Kind.PUNCT and (token.value == "+" or token.value == "-"): # 単項演算子
       tree, n = parse_expression(tokens, n)

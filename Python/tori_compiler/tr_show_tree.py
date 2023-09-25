@@ -68,6 +68,10 @@ def pretty_node(node):
     args = ", ".join([pretty_node(arg) for arg in node.args])
     return f"({pretty_node(node.func)}({args}))"
 
+  elif node_kind == TR_Node_Kind.PYFUNC_CALL:
+    args = ", ".join([pretty_node(arg) for arg in node.args])
+    return f"({node.name}({args}))"
+
   elif node_kind == TR_Node_Kind.DEF:
     args = ", ".join([pretty_node(arg) for arg in node.args])
     exprs = ", ".join([pretty_node(expr) for expr in node.exprs])
