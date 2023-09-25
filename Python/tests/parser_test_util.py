@@ -58,6 +58,21 @@ def expand_tree(tree):
   elif node_type == TR_Node_Kind.EQUAL:
     expanded += f"EQUAL({expand_tree(tree.left)}, {expand_tree(tree.right)})"
 
+  elif node_type == TR_Node_Kind.NEQ:
+    expanded += f"NEQ({expand_tree(tree.left)}, {expand_tree(tree.right)})"
+
+  elif node_type == TR_Node_Kind.LT:
+    expanded += f"LT({expand_tree(tree.left)}, {expand_tree(tree.right)})"
+
+  elif node_type == TR_Node_Kind.GT:
+    expanded += f"GT({expand_tree(tree.left)}, {expand_tree(tree.right)})"
+
+  elif node_type == TR_Node_Kind.LEQ:
+    expanded += f"LEQ({expand_tree(tree.left)}, {expand_tree(tree.right)})"
+
+  elif node_type == TR_Node_Kind.GEQ:
+    expanded += f"GEQ({expand_tree(tree.left)}, {expand_tree(tree.right)})"
+
   elif node_type == TR_Node_Kind.CALL:
     func = expand_tree(tree.func)
     args = ", ".join([expand_tree(arg) for arg in tree.args])
