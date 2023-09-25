@@ -295,7 +295,9 @@ def tr_parser(tokens):
       sys.exit()
     
     token = get_current_token(tokens, n)
-    if token.kind != TR_Token_Kind.PUNCT or token.value != ";":
+    if token.kind == TR_Token_Kind.PUNCT and token.value == ";":
+      n += 1
+    else:
       print("ERROR")
       sys.exit()
 
