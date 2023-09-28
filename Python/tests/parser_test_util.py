@@ -94,7 +94,7 @@ def expand_tree(tree):
     expanded += f"DEF(({args}), ({exprs}))"
 
   elif node_type == TR_Node_Kind.PYFUNC:
-    funcs = ", ".join([expand_tree(name) for name in tree.funcs])
+    funcs = ", ".join(tree.funcs)
     expanded += f"PYFUNC({funcs})"
 
   return expanded

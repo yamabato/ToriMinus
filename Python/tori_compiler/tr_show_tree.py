@@ -83,3 +83,7 @@ def pretty_node(node):
     exprs = ", ".join([pretty_node(expr) for expr in node.exprs])
     return f"({{({args}), ({exprs})}})"
 
+  elif node_kind == TR_Node_Kind.PYFUNC:
+    funcs = ", ".join(node.funcs)
+    return f"PYFUNC {funcs};"
+

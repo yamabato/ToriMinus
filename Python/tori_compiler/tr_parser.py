@@ -318,6 +318,31 @@ def parse_define_function(tokens, n):
   
   return node, n
 
+def parse_pyfunc(tokens, n):
+  n += 1
+  
+  funcs = []
+  while True:
+    token = get_current_token(tokens, n)
+    if token.kind == TR_Token_Kind.PYFUNC_IDENT:
+      funcs.append(token.value)
+    else:
+      print("ERROR")
+      sys.exit()
+
+    token, n = get_next_token(tokens, n)
+    if token.kind == TR_Token_Kind.PUNCT and token.value == ",": n += 1
+    elif token.kind == TR_Token_Kind.PUNCT and token.value == ";": break
+    else:
+      print("ERROR")
+      sys.exit()
+
+  node = TR_Node()
+  node.kind = TR_Node_Kind.PYFUNC
+  node.funcs = funcs
+
+  return node, n
+
 # ---
 
 def tr_parser(tokens):
@@ -335,8 +360,11 @@ def tr_parser(tokens):
       tree, n = parse_expression(tokens, n)
     elif token.kind == TR_Token_Kind.STRING: # 文字列
       tree, n = parse_expression(tokens, n)
-    elif token.kind == TR_Token_Kind.IDENT: # 変数
-      tree, n = parse_expression(tokens, n)
+    elif token.kind == TR_Token_Kind.IDENT:
+      if token.value == "pyfunc": # pyfunc
+        tree, n = parse_pyfunc(tokens, n)
+      else: # 変数
+        tree, n = parse_expression(tokens, n)
     elif token.kind == TR_Token_Kind.PYFUNC_IDENT: # pyfunc 
       tree, n = parse_expression(tokens, n)
     elif token.kind == TR_Token_Kind.PUNCT and (token.value == "+" or token.value == "-"): # 単項演算子

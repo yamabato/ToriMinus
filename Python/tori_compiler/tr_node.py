@@ -12,6 +12,8 @@ class TR_Node:
   name = None
   args = None
 
+  funcs = None
+
   exprs = None
 
 class TR_Node_Kind(IntEnum):
@@ -20,6 +22,7 @@ class TR_Node_Kind(IntEnum):
   STR = auto()
   VAR = auto()
 
+  PYFUNC = auto()
   CALL = auto()
   PYFUNC_CALL = auto()
   DEF = auto()
