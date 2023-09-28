@@ -7,6 +7,16 @@ program = """
 pyfunc #print;
 1+2;
 #print(1+2*3);
+f = {(a, b),
+      a + b,
+};
+a = 5;
+b = 1 + 2 * 3 * (5+2);
+c = f(10*f(1,3), 5);
+a += b = c + 2;
+#print(f(a+b, c));
+#print({(x, y), 
+x * y}(1,2));
 """
 
 tokens = tr_lexer(program)
