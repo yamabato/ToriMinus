@@ -43,8 +43,11 @@ class TR_Node_Kind(IntEnum):
   GEQ = auto()
 
   ADD = auto()
+  SUB = auto()
   MUL = auto()
+  DIV = auto()
+  MOD = auto()
 
-  POWER = auto()
+  POW = auto()
 
   MINUS = auto()

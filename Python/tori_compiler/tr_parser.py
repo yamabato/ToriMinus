@@ -109,6 +109,9 @@ def parse_add_sub(tokens, n):
     if token.kind == TR_Token_Kind.PUNCT and token.value == "+":
       right, n = parse_mul_div(tokens, n+1)
       node = make_binary_operation_node(TR_Node_Kind.ADD, node, right)
+    elif token.kind == TR_Token_Kind.PUNCT and token.value == "-":
+      right, n = parse_mul_div(tokens, n+1)
+      node = make_binary_operation_node(TR_Node_Kind.SUB, node, right)
     else: break
 
   return node, n
@@ -121,6 +124,12 @@ def parse_mul_div(tokens, n):
     if token.kind == TR_Token_Kind.PUNCT and token.value == "*":
       right, n = parse_unary(tokens, n+1)
       node = make_binary_operation_node(TR_Node_Kind.MUL, node, right)
+    elif token.kind == TR_Token_Kind.PUNCT and token.value == "/":
+      right, n = parse_unary(tokens, n+1)
+      node = make_binary_operation_node(TR_Node_Kind.DIV, node, right)
+    elif token.kind == TR_Token_Kind.PUNCT and token.value == "%":
+      right, n = parse_unary(tokens, n+1)
+      node = make_binary_operation_node(TR_Node_Kind.MOD, node, right)
     else: break
 
   return node, n
@@ -145,7 +154,7 @@ def parse_power(tokens, n):
     token = get_current_token(tokens, n) 
     if token.kind == TR_Token_Kind.PUNCT and token.value == "**":
       right, n = parse_factor(tokens, n+1)
-      node = make_binary_operation_node(TR_Node_Kind.POWER, node, right)
+      node = make_binary_operation_node(TR_Node_Kind.POW, node, right)
     else: break
 
   return node, n
