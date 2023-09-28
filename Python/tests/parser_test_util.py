@@ -93,6 +93,10 @@ def expand_tree(tree):
     exprs = ", ".join([expand_tree(expr) for expr in tree.exprs])
     expanded += f"DEF(({args}), ({exprs}))"
 
+  elif node_type == TR_Node_Kind.PYFUNC:
+    funcs = ", ".join([expand_tree(name) for name in tree.funcs])
+    expanded += f"PYFUNC({funcs})"
+
   return expanded
 
 def get_expanded_code(program):
