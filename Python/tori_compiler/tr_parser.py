@@ -5,7 +5,7 @@ from tr_node import TR_Node, TR_Node_Kind
 
 
 ASSIGNMENT_OPERS = [
-  "=", "+=", "-=", "*=", "/=", "%=", "**=",
+  "=", "+=", "-=", "*=", "/=", "%=", "**=", "&=", "|=", "^="
 ]
 
 ASSIGN_OPER_KIND = {

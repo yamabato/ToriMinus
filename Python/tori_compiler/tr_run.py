@@ -38,7 +38,10 @@ ASSIGNMENT_OPERATORS = [
   TR_Node_Kind.ASSIGN_MUL,
   TR_Node_Kind.ASSIGN_DIV,
   TR_Node_Kind.ASSIGN_MOD,
-  TR_Node_Kind.ASSIGN_POW
+  TR_Node_Kind.ASSIGN_POW,
+  TR_Node_Kind.ASSIGN_AND,
+  TR_Node_Kind.ASSIGN_OR,
+  TR_Node_Kind.ASSIGN_XOR,
 ]
 
 COMPARISON_OPERATORS = [

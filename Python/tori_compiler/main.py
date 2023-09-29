@@ -5,10 +5,7 @@ from tr_run import tori_minus_run
 from tr_show_tree import show_trees
 
 program = """
-!`true`;
-`true` & `true`;
-!`true` | `true` ^ `false`;
-`true` ^ `true`;
+a ^=`true`;
 """
 
 tokens = tr_lexer(program)
