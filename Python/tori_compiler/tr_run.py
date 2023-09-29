@@ -138,7 +138,7 @@ class Evaluator:
       ret = self.eval_pyfunc_call(node)
 
     else:
-      print("ERROR:", node_kind)
+      print("ERROR-EVAL:", node_kind)
       sys.exit()
 
     return ret
@@ -179,7 +179,7 @@ class Evaluator:
     if name in self.env:
       return self.env[name]
     else:
-      print("ERROR:", name)
+      print("ERROR-EVAL:", name)
       sys.exit()
 
   def eval_unary(self, node):
@@ -191,7 +191,7 @@ class Evaluator:
         ret.kind = TR_Value_Kind.num_
         ret.value = -value.value
       else:
-        print("ERROR")
+        print("ERROR-EVAL")
         sys.exit
 
     elif node.kind == TR_Node_Kind.NOT:
@@ -200,7 +200,7 @@ class Evaluator:
         ret.kind = TR_Value_Kind.bool_
         ret.value = bool_to_tr_bool(not BOOL_VALUE_TABLE[value.value])
       else:
-        print("ERROR")
+        print("ERROR-EVAL")
         sys.exit()
 
     return ret
@@ -225,7 +225,7 @@ class Evaluator:
       elif oper == TR_Node_Kind.MOD: ret_value = left_value % right_value
       elif oper == TR_Node_Kind.POW: ret_value = left_value ** right_value
       else:
-        print("ERROR")
+        print("ERROR-EVAL")
         sys.exit()
 
       ret = TR_Value()
@@ -235,7 +235,7 @@ class Evaluator:
     elif left_kind == TR_Value_Kind.str_ and right_kind == TR_Value_Kind.num_:
       if oper == TR_Node_Kind.MUL: ret_value = left_value * int(right_value)
       else:
-        print("ERROR")
+        print("ERROR-EVAL")
         sys.exit()
 
       ret = TR_Value()
@@ -245,7 +245,7 @@ class Evaluator:
     elif left_kind == TR_Value_Kind.str_ and right_kind == TR_Value_Kind.str_:
       if oper == TR_Node_Kind.ADD: ret_value = left_value + right_value
       else:
-        print("ERROR")
+        print("ERROR-EVAL")
         sys.exit()
 
       ret = TR_Value()
@@ -253,7 +253,7 @@ class Evaluator:
       ret.value = ret_value
 
     else:
-      print("ERROR")
+      print("ERROR-EVAL")
       sys.exit()
 
     return ret
@@ -271,7 +271,7 @@ class Evaluator:
     oper = node.kind
 
     if left_kind != TR_Value_Kind.bool_ or right_kind != TR_Value_Kind.bool_:
-      print("ERROR")
+      print("ERROR-EVAL")
       sys.exit()
    
     ret = TR_Value()
@@ -314,25 +314,25 @@ class Evaluator:
       if left_kind == TR_Value_Kind.num_ and right_kind == TR_Value_Kind.num_:
         ret_value = left_value < right_value
       else:
-        print("ERROR")
+        print("ERROR-EVAL")
         sys.exit()
     elif oper == TR_Node_Kind.GT:
       if left_kind == TR_Value_Kind.num_ and right_kind == TR_Value_Kind.num_:
         ret_value = left_value > right_value
       else:
-        print("ERROR")
+        print("ERROR-EVAL")
         sys.exit()
     elif oper == TR_Node_Kind.LEQ:
       if left_kind == TR_Value_Kind.num_ and right_kind == TR_Value_Kind.num_:
         ret_value = left_value <= right_value
       else:
-        print("ERROR")
+        print("ERROR-EVAL")
         sys.exit()
     elif oper == TR_Node_Kind.GEQ:
       if left_kind == TR_Value_Kind.num_ and right_kind == TR_Value_Kind.num_:
         ret_value = left_value >= right_value
       else:
-        print("ERROR")
+        print("ERROR-EVAL")
         sys.exit()
 
     ret = TR_Value()
@@ -362,7 +362,7 @@ class Evaluator:
     func_evaluator.env = copy.deepcopy(self.env)
 
     if len(func_args) != len(args):
-      print("ERROR")
+      print("ERROR-EVAL")
       sys.exit()
 
     for var, expr in zip(func_args, args):
@@ -419,13 +419,13 @@ class Evaluator:
 
   def check_pyfunc_args_count(self, args, length):
     if len(args) not in length:
-      print("ERROR")
+      print("ERROR-EVAL")
       sys.exit()
 
   def check_pyfunc_args_type(self, args, types):
     for arg, t in zip(args, types):
       if arg.kind != t:
-        print("ERROR")
+        print("ERROR-EVAL")
         sys.exit()
 
   def is_num(self, str_):
@@ -443,7 +443,7 @@ class Evaluator:
 
     cond = self.eval(args[0])
     if cond.kind != TR_Value_Kind.bool_:
-      print("ERROR")
+      print("ERROR-EVAL")
       sys.exit()
 
     if BOOL_VALUE_TABLE[cond.value]:
@@ -462,7 +462,7 @@ class Evaluator:
     while True:
       cond = self.eval(args[0])
       if cond.kind != TR_Value_Kind.bool_:
-        print("ERROR")
+        print("ERROR-EVAL")
         sys.exit()
 
       if not BOOL_VALUE_TABLE[cond.value]: break
@@ -481,7 +481,7 @@ class Evaluator:
       self.eval(args[2])
       cond = self.eval(args[1])
       if cond.kind != TR_Value_Kind.bool_:
-        print("ERROR")
+        print("ERROR-EVAL")
         sys.exit()
       if not BOOL_VALUE_TABLE[cond.value]: break
 
@@ -529,13 +529,13 @@ class Evaluator:
     ind = args[1]
     
     if ind.kind != TR_Value_Kind.num_:
-      print("ERROR")
+      print("ERROR-EVAL")
       sys.exit
     if len(text.value) <= ind.value or ind.value < 0:
-      print("ERROR")
+      print("ERROR-EVAL")
       sys.exit()
     if int(ind.value) != ind.value:
-      print("ERROR")
+      print("ERROR-EVAL")
       sys.exit()
     
     ret = TR_Value()
@@ -555,7 +555,7 @@ class Evaluator:
       ret.value = self.convert_str_to_num(arg.value)
       ret.kind = TR_Value_Kind.num_
     else:
-      print("ERROR")
+      print("ERROR-EVAL")
       sys.exit()
 
     return ret
@@ -636,7 +636,7 @@ class Evaluator:
     val = self.eval(args[1])
 
     if var.kind != TR_Node_Kind.VAR:
-      print("ERROR")
+      print("ERROR-EVAL")
       sys.exit()
 
     self.assign(var, val)
@@ -648,11 +648,11 @@ class Evaluator:
 
     arg = args[0]
     if arg.kind != TR_Node_Kind.VAR:
-      print("ERROR")
+      print("ERROR-EVAL")
       sys.exit()
 
     if arg.value not in self.env:
-      print("ERROR")
+      print("ERROR-EVAL")
       sys.exit()
 
     del self.env[arg.value]    

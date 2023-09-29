@@ -114,7 +114,7 @@ def read_sp_value_literal(program, n):
   elif token_value == "non":
     kind = TR_Token_Kind.NON
   else:
-    print("ERROR")
+    print("ERROR-LEXER")
     sys.exit()
 
   return kind, token_value, n+1
@@ -228,7 +228,7 @@ def tr_lexer(program):
       n = skip_comment(program, n)
     
     else:
-      print("ERROR")
+      print("ERROR-LEXER")
       sys.exit()
 
   return tokens 

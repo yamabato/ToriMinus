@@ -254,7 +254,7 @@ def parse_pyfunc_call(tokens, n):
       node.args = args
  
     else:
-      print("ERROR")
+      print("ERROR-PARSER")
       sys.exit()
 
   else:  
@@ -361,7 +361,7 @@ def parse_arg_list(tokens, n):
       n += 1
     elif token.kind == TR_Token_Kind.PUNCT and token.value == ")": break
     else:
-      print("ERROR")
+      print("ERROR-PARSER")
       sys.exit()
 
   return args, n
@@ -380,7 +380,7 @@ def parse_def_expressions(tokens, n):
     if token.kind == TR_Token_Kind.PUNCT and token.value == ",": n += 1 
     elif token.kind == TR_Token_Kind.PUNCT and token.value == "}": break
     else:
-      print("ERROR")
+      print("ERROR-PARSER")
       sys.exit()
 
   return exprs, n+1
@@ -403,7 +403,7 @@ def parse_define_function(tokens, n):
     exprs, n = parse_def_expressions(tokens, n+1)
     node.exprs = exprs
   else:
-    print("ERROR")
+    print("ERROR-PARSER")
     sys.exit()
   
   return node, n
@@ -417,14 +417,14 @@ def parse_pyfunc(tokens, n):
     if token.kind == TR_Token_Kind.PYFUNC_IDENT:
       funcs.append(token.value)
     else:
-      print("ERROR")
+      print("ERROR-PARSER")
       sys.exit()
 
     token, n = get_next_token(tokens, n)
     if token.kind == TR_Token_Kind.PUNCT and token.value == ",": n += 1
     elif token.kind == TR_Token_Kind.PUNCT and token.value == ";": break
     else:
-      print("ERROR")
+      print("ERROR-PARSER")
       sys.exit()
 
   node = TR_Node()
@@ -469,14 +469,14 @@ def tr_parser(tokens):
     elif token.kind == TR_Token_Kind.PUNCT and token.value == "(": # 括弧
       tree, n = parse_expression(tokens, n)
     else:
-      print("ERROR", token.value, token.kind, next_token.value, next_token.kind)
+      print("ERROR-PARSER", token.value, token.kind, next_token.value, next_token.kind)
       sys.exit()
     
     token = get_current_token(tokens, n)
     if token.kind == TR_Token_Kind.PUNCT and token.value == ";":
       n += 1
     else:
-      print("ERROR")
+      print("ERROR-PARSER")
       sys.exit()
 
     trees.append(tree)
