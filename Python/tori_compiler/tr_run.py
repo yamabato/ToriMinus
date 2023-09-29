@@ -61,6 +61,7 @@ class Evaluator:
       "#to_str": self.tr_pf_to_str,
       "#exit": self.tr_pf_exit,
       "#del": self.tr_pf_del,
+      "#type": self.tr_pf_type,
     }
 
   def eval(self, node):
@@ -453,6 +454,28 @@ class Evaluator:
 
     ret = TR_Value()
     ret.kind = TR_Value_Kind.non_
+    return ret
+
+  def tr_pf_type(self, args):
+    args = self.eval_args(args)
+    self.check_pyfunc_args_count(args, [1])
+
+    arg = args[0]
+    arg_kind = arg.kind
+
+    ret = TR_Value()
+    ret.kind = TR_Value_Kind.str_
+    if arg_kind == TR_Value_Kind.num_:
+      ret.value = "num"
+    elif arg_kind == TR_Value_Kind.str_:
+      ret.value = "str"
+    elif arg_kind == TR_Value_Kind.bool_:
+      ret.value = "bool"
+    elif arg_kind == TR_Value_Kind.non_:
+      ret.value = "non"
+    elif arg_kind == TR_Value_Kind.func_:
+      ret.value = "func"
+
     return ret
 
 # ---
