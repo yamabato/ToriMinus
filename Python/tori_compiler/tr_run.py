@@ -66,6 +66,7 @@ def bool_to_tr_bool(value):
 
 # ---
 
+env_global = {}
 class Evaluator:
   def __init__(self):
     self.env = {}
@@ -82,6 +83,7 @@ class Evaluator:
       "#to_str": self.tr_pf_to_str,
       "#to_bool": self.tr_pf_to_bool,
       "#exit": self.tr_pf_exit,
+      "#set_global": self.tr_pf_set_global,
       "#del": self.tr_pf_del,
       "#type": self.tr_pf_type,
       "#time": self.tr_pf_time,
@@ -172,8 +174,8 @@ class Evaluator:
 
   def eval_var(self, node):
     name = node.value
-    if name in self.env:
-      return self.env[name]
+    if name in env_global:
+      return env_global[name]
     else:
       print("ERROR:", name)
       sys.exit()
@@ -355,7 +357,7 @@ class Evaluator:
     args = node.args
 
     func_evaluator = Evaluator()
-    func_evaluator.env = copy.deepcopy(self.env)
+    func_evaluator.env = copy.deepcopy(env_global)
 
     if len(func_args) != len(args):
       print("ERROR")
@@ -386,7 +388,7 @@ class Evaluator:
   
   def assign(self, var, value):
     name = var.value
-    self.env[name] = value
+    env_global[name] = value
 
   def pretty_value(self, value):
     value_kind = value.kind
@@ -608,6 +610,20 @@ class Evaluator:
 
     sys.exit(code)
 
+  def tr_pf_set_global(self, args):
+    self.check_pyfunc_args_count(args, [2])
+
+    var = args[0]
+    val = self.eval(args[1])
+
+    if var.kind != TR_Node_Kind.VAR:
+      print("ERROR")
+      sys.exit()
+
+    env_global[var.value] = val
+
+    return val
+
   def tr_pf_del(self, args):
     self.check_pyfunc_args_count(args, [1])
 
@@ -616,11 +632,11 @@ class Evaluator:
       print("ERROR")
       sys.exit()
 
-    if arg.value not in self.env:
+    if arg.value not in env_global:
       print("ERROR")
       sys.exit()
 
-    del self.env[arg.value]    
+    del env_global[arg.value]    
 
     ret = TR_Value()
     ret.kind = TR_Value_Kind.non_
