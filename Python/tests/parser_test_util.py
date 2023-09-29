@@ -52,6 +52,18 @@ def expand_tree(tree):
   elif node_type == TR_Node_Kind.POW:
     expanded += f"POW({expand_tree(tree.left)}, {expand_tree(tree.right)})"
 
+  elif node_type == TR_Node_Kind.AND:
+    expanded += f"AND({expand_tree(tree.left)}, {expand_tree(tree.right)})"
+
+  elif node_type == TR_Node_Kind.OR:
+    expanded += f"OR({expand_tree(tree.left)}, {expand_tree(tree.right)})"
+
+  elif node_type == TR_Node_Kind.XOR:
+    expanded += f"XOR({expand_tree(tree.left)}, {expand_tree(tree.right)})"
+
+  elif node_type == TR_Node_Kind.NOT:
+    expanded += f"NOT({expand_tree(tree.left)})"
+
   elif node_type == TR_Node_Kind.MINUS:
     expanded += f"MINUS({expand_tree(tree.right)})"
 
