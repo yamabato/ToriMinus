@@ -9,17 +9,14 @@ N = 100;
     #if(
       n % 3 == 0,
       #print("Fizz"),
-      `non`
     ),
     #if(
       n % 5 == 0,
       #print("Buzz"),
-      `non`
     ),
     #if(
       (n % 3 != 0) & (n % 5 != 0),
       #print(n),
-      `non`
     ),
     #print("\n")
   }()
