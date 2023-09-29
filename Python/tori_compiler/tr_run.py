@@ -2,6 +2,7 @@ import re
 import sys
 import time
 import copy
+import random
 
 from tr_node import TR_Node_Kind
 from tr_value import TR_Value, TR_Value_Kind
@@ -64,6 +65,7 @@ class Evaluator:
       "#del": self.tr_pf_del,
       "#type": self.tr_pf_type,
       "#time": self.tr_pf_time,
+      "#rand": self.tr_pf_rand,
     }
 
   def eval(self, node):
@@ -486,6 +488,15 @@ class Evaluator:
     ret = TR_Value()
     ret.kind = TR_Value_Kind.num_
     ret.value = time.time()
+  
+    return ret
+
+  def tr_pf_rand(self, args):
+    self.check_pyfunc_args_count(args, [0])
+
+    ret = TR_Value()
+    ret.kind = TR_Value_Kind.num_
+    ret.value = random.random()
   
     return ret
 
