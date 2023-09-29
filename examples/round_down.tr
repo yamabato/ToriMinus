@@ -1,0 +1,24 @@
+round_down = {
+  (x),
+  x_str = #to_str(x),
+  x_str_len = #len(x_str),
+  is_frac_part = `false`,
+  int_part = "",
+  point_pos = #for(
+    n = 0,
+    n < x_str_len,
+    n += 1,
+    #if(
+      !is_frac_part,
+      #if(
+        (c=#index(x_str, n))==".",
+        is_frac_part = `true`,
+        int_part += c 
+      ),
+      int_part
+    ),
+  ),
+  int_part
+};
+
+#print(round_down(.2), "\n");
