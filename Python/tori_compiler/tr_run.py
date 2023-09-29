@@ -1,3 +1,4 @@
+import re
 import sys
 import copy
 
@@ -56,6 +57,7 @@ class Evaluator:
     self.pyfunc_table = {
       "#print": self.tr_pf_print,
       "#len": self.tr_pf_len,
+      "#to_num": self.tr_pf_to_num,
     }
 
   def eval(self, node):
@@ -307,8 +309,9 @@ class Evaluator:
     if name not in self.pyfunc_table:
       print("ERRO")
       sys.exit()
-
-    ret = self.pyfunc_table[name](args)
+    
+    args_evaluated = [self.eval(arg) for arg in args]
+    ret = self.pyfunc_table[name](args_evaluated)
     return ret
 
   # ---
@@ -336,32 +339,60 @@ class Evaluator:
 
       return f"{{({args_}), ({exprs_})}}"
 
+  def check_pyfunc_args_count(self, args, length):
+    if len(args) != length:
+      print("ERROR")
+      sys.exit()
+
+  def check_pyfunc_args_type(self, args, types):
+    for arg, t in zip(args, types):
+      if arg.kind != t:
+        print("ERROR")
+        sys.exit()
+
+  def is_num(self, str_):
+    return bool(re.fullmatch("[+-]?(\d+\.?\d*|\d*\.\d+)", str_))
+
+  def convert_str_to_num(self, str_):
+    if "." in str_: return float(str_)
+    return int(str_)
+
   # ---
   # pyfunc
 
   def tr_pf_print(self, args):
     output = [] 
     for arg in args:
-      output.append(self.pretty_value(self.eval(arg)))
+      output.append(self.pretty_value(arg))
 
-    print(" ".join(output))
+    print(" ".join(output), end="")
     ret = TR_Value()
     ret.kind = TR_Value_Kind.non_
     return ret
 
   def tr_pf_len(self, args):
-    if len(args) != 1:
-      print("ERROR")
-      sys.exit()
+    self.check_pyfunc_args_count(args, 1)
+    self.check_pyfunc_args_type(args, [TR_Value_Kind.str_])
 
-    arg = self.eval(args[0])
-    if arg.kind != TR_Value_Kind.str_:
-      print("ERROR")
-      sys.exit()
-
+    arg = args[0] 
     ret = TR_Value()
     ret.kind = TR_Value_Kind.num_
     ret.value = len(arg.value)
+    return ret
+
+  def tr_pf_to_num(self, args):
+    self.check_pyfunc_args_count(args, 1)
+    self.check_pyfunc_args_type(args, [TR_Value_Kind.str_])
+
+    arg = args[0]
+    if self.is_num(arg.value):
+      ret = TR_Value()
+      ret.value = self.convert_str_to_num(arg.value)
+      ret.kind = TR_Value_Kind.num_
+    else:
+      print("ERROR")
+      sys.exit()
+
     return ret
 
 # ---
