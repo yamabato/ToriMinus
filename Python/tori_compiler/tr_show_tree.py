@@ -19,6 +19,9 @@ def pretty_node(node):
   elif node_kind == TR_Node_Kind.BOOL:
     return f"`{node.value}`"
 
+  elif node_kind == TR_Node_Kind.NON:
+    return f"`{node.value}`"
+
   elif node_kind == TR_Node_Kind.VAR:
     return str(node.value)
 

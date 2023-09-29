@@ -50,6 +50,9 @@ class Evaluator:
     elif node_kind == TR_Node_Kind.BOOL:
       ret = self.eval_bool(node)
 
+    elif node_kind == TR_Node_Kind.NON:
+      ret = self.eval_non(node)
+
     elif node_kind == TR_Node_Kind.VAR:
       ret = self.eval_var(node)
 
@@ -85,6 +88,9 @@ class Evaluator:
   def eval_bool(self, node):
     value = BOOL_VALUE_TABLE[node.value]
     return value
+
+  def eval_non(self, node):
+    return None
 
   def eval_var(self, node):
     name = node.value
