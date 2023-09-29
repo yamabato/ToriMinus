@@ -6,7 +6,7 @@ from tr_show_tree import show_trees
 
 program = """
 a = 10;
-a -= 1+2;
+a += 5;
 """
 
 tokens = tr_lexer(program)
