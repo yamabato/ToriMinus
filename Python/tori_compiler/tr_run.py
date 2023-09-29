@@ -45,6 +45,9 @@ class Evaluator:
     elif node_kind == TR_Node_Kind.VAR:
       ret = self.eval_var(node)
 
+    elif node_kind == TR_Node_Kind.MINUS:
+      ret = self.eval_unary(node)
+
     elif node_kind in ARITHMETIC_OPERATORS:
       ret = self.eval_arithemetic_operation(node)
 
@@ -78,6 +81,10 @@ class Evaluator:
     else:
       print("ERROR:", name)
       sys.exit()
+
+  def eval_unary(self, node):
+    if node.kind == TR_Node_Kind.MINUS:
+      return -self.eval(node.right)
 
   def eval_arithemetic_operation(self, node):
     left = self.eval(node.left)
