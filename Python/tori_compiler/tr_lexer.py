@@ -9,6 +9,7 @@ WHITESPACE = " \t\n"
 DOUBLE_QUOT = "\""
 COMMENT = "~"
 PYFUNC_PREFIX = "#"
+BOOL_SIGN = "`"
 
 PUNCTUATOR_LETTERS = [
   "+", "-", "*", "/", "%",
@@ -24,6 +25,8 @@ PUNCTUATORS = [
   "(", ")", "{", "}", ",",
   ";",
 ]
+
+BOOLEAN_VALUES = ["true", "false"]
 
 # ---
 # ヘルパー関数
@@ -48,7 +51,8 @@ def check_char_type(char):
   elif char in PYFUNC_PREFIX: return TR_Char_Type.PYFUNC_PREFIX
   elif char == DOUBLE_QUOT: return TR_Char_Type.DOUBLE_QUOT
   elif char in PUNCTUATOR_LETTERS: return TR_Char_Type.PUNCT_LETTER
-  if char == COMMENT: return TR_Char_Type.COMMENT
+  elif char == COMMENT: return TR_Char_Type.COMMENT
+  elif char == BOOL_SIGN: return TR_Char_Type.BOOL_SIGN
 
 # ---
 # 各種リテラル読み込み
@@ -92,6 +96,21 @@ def read_ident_literal(program, n):
     n, c = get_next_char(program, n)
 
   return kind, token_value, n
+
+def read_boolean_literal(program, n):
+  kind = TR_Token_Kind.BOOL
+  token_value = ""
+  
+  n, c = get_next_char(program, n)
+  while c != BOOL_SIGN:
+    token_value += c
+    n, c = get_next_char(program, n)
+
+  if token_value not in BOOLEAN_VALUES:
+    print("ERROR")
+    sys.exit()
+
+  return kind, token_value, n+1
 
 def read_string_literal(program, n):
   kind = TR_Token_Kind.STRING
@@ -183,6 +202,12 @@ def tr_lexer(program):
     # Token_Kind.STRING
     elif char_type == TR_Char_Type.DOUBLE_QUOT:
       kind, value, n = read_string_literal(program, n)
+      token = TR_Token(kind, value)
+      tokens.append(token)
+
+    # Token_Kind.BOOL
+    elif char_type == TR_Char_Type.BOOL_SIGN:
+      kind, value, n = read_boolean_literal(program, n)
       token = TR_Token(kind, value)
       tokens.append(token)
 
