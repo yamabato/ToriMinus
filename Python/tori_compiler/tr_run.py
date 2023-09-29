@@ -63,6 +63,7 @@ class Evaluator:
       "#print": self.tr_pf_print,
       "#input": self.tr_pf_input,
       "#len": self.tr_pf_len,
+      "#index": self.tr_pf_index,
       "#to_num": self.tr_pf_to_num,
       "#to_str": self.tr_pf_to_str,
       "#to_bool": self.tr_pf_to_bool,
@@ -455,6 +456,30 @@ class Evaluator:
     ret.value = len(arg.value)
     return ret
 
+  def tr_pf_index(self, args):
+    args = self.eval_args(args)
+    self.check_pyfunc_args_count(args, [2])
+    self.check_pyfunc_args_type(args, [TR_Value_Kind.str_, TR_Value_Kind.num_])
+
+    text = args[0]
+    ind = args[1]
+    
+    if ind.kind != TR_Value_Kind.num_:
+      print("ERROR")
+      sys.exit
+    if len(text.value) <= ind.value or ind.value < 0:
+      print("ERROR")
+      sys.exit()
+    if int(ind.value) != ind.value:
+      print("ERROR")
+      sys.exit()
+    
+    ret = TR_Value()
+    ret.kind = TR_Value_Kind.str_
+    ret.value = text.value[int(ind.value)]
+
+    return ret
+ 
   def tr_pf_to_num(self, args):
     args = self.eval_args(args)
     self.check_pyfunc_args_count(args, [1])
