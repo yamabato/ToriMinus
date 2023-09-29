@@ -20,6 +20,7 @@ class TR_Node_Kind(IntEnum):
   INT = auto()
   DEC = auto()
   STR = auto()
+  BOOL = auto()
   VAR = auto()
 
   PYFUNC = auto()

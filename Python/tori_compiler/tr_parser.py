@@ -230,6 +230,9 @@ def parse_factor(tokens, n):
   elif token.kind == TR_Token_Kind.STRING:
     node, n = parse_str(tokens, n)
 
+  elif token.kind == TR_Token_Kind.BOOL:
+    node, n = parse_bool(tokens, n)
+
   elif token.kind == TR_Token_Kind.IDENT:
     node, n = parse_var(tokens, n)
 
@@ -265,6 +268,14 @@ def parse_dec(tokens, n):
 def parse_str(tokens, n):
   node = TR_Node()
   node.kind = TR_Node_Kind.STR
+  token = get_current_token(tokens, n)
+  node.value = token.value
+
+  return node, n+1
+
+def parse_bool(tokens, n):
+  node = TR_Node()
+  node.kind = TR_Node_Kind.BOOL
   token = get_current_token(tokens, n)
   node.value = token.value
 
@@ -382,6 +393,8 @@ def tr_parser(tokens):
     if token.kind == TR_Token_Kind.INT or token.kind == TR_Token_Kind.DEC: # 数値
       tree, n = parse_expression(tokens, n)
     elif token.kind == TR_Token_Kind.STRING: # 文字列
+      tree, n = parse_expression(tokens, n)
+    elif token.kind == TR_Token_Kind.BOOL: # 真偽値 
       tree, n = parse_expression(tokens, n)
     elif token.kind == TR_Token_Kind.IDENT:
       if token.value == "pyfunc": # pyfunc
