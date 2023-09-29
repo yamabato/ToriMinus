@@ -58,6 +58,7 @@ class Evaluator:
 
     self.pyfunc_table = {
       "#print": self.tr_pf_print,
+      "#input": self.tr_pf_input,
       "#len": self.tr_pf_len,
       "#to_num": self.tr_pf_to_num,
       "#to_str": self.tr_pf_to_str,
@@ -377,9 +378,20 @@ class Evaluator:
     for arg in args:
       output.append(self.pretty_value(arg))
 
-    print(" ".join(output), end="")
+    sys.stdout.write(" ".join(output))
+    sys.stdout.flush()
+
     ret = TR_Value()
     ret.kind = TR_Value_Kind.non_
+    return ret
+
+  def tr_pf_input(self, args):
+    self.check_pyfunc_args_count(args, [0])
+
+    ret = TR_Value()
+    ret.kind = TR_Value_Kind.str_
+    ret.value = sys.stdin.readline()[:-1]
+
     return ret
 
   def tr_pf_len(self, args):
@@ -506,5 +518,6 @@ def tori_minus_run(trees):
   evaluator = Evaluator()
   for tree in trees:
     value = evaluator.eval(tree)
+    sys.stdout.flush()
 
 # ---
