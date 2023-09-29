@@ -52,4 +52,20 @@ def test_parser_ASSIGN_OTHER_12():
   expanded_code = get_expanded_code("a**=1+2;")
   assert expanded_code == "ASSIGN(VAR(a), POW(VAR(a), ADD(INT(1), INT(2))))" 
 
+def test_parser_ASSIGN_OTHER_13():
+  expanded_code = get_expanded_code("a&=`true`;")
+  assert expanded_code == "ASSIGN(VAR(a), AND(VAR(a), BOOL(true)))" 
+
+def test_parser_ASSIGN_OTHER_14():
+  expanded_code = get_expanded_code("a|=`true`;")
+  assert expanded_code == "ASSIGN(VAR(a), OR(VAR(a), BOOL(true)))" 
+
+def test_parser_ASSIGN_OTHER_15():
+  expanded_code = get_expanded_code("a^=`true`;")
+  assert expanded_code == "ASSIGN(VAR(a), XOR(VAR(a), BOOL(true)))" 
+
+def test_parser_ASSIGN_OTHER_16():
+  expanded_code = get_expanded_code("a&=`true` | `false`;")
+  assert expanded_code == "ASSIGN(VAR(a), AND(VAR(a), OR(BOOL(true), BOOL(false))))" 
+
 # ---
