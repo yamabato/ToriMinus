@@ -28,7 +28,7 @@ def pretty_node(node):
   elif node_kind == TR_Node_Kind.MINUS:
     return f"(-{pretty_node(node.right)})"
 
-  elif node_kind == TR_Node_Kind.POWER:
+  elif node_kind == TR_Node_Kind.POW:
     return f"({pretty_node(node.left)} ** {pretty_node(node.right)})"
 
   elif node_kind == TR_Node_Kind.ASSIGN:

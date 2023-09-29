@@ -12,6 +12,15 @@ ARITHMETIC_OPERATORS = [
   TR_Node_Kind.POW
 ]
 
+ASSIGNMENT_OPERATORS = [
+  TR_Node_Kind.ASSIGN,
+  TR_Node_Kind.ASSIGN_ADD,
+  TR_Node_Kind.ASSIGN_SUB,
+  TR_Node_Kind.ASSIGN_MUL,
+  TR_Node_Kind.ASSIGN_DIV,
+  TR_Node_Kind.ASSIGN_MOD,
+  TR_Node_Kind.ASSIGN_POW
+]
 
 # ---
 
@@ -33,6 +42,9 @@ class Evaluator:
 
     elif node_kind in ARITHMETIC_OPERATORS:
       ret = self.eval_arithemetic_operation(node)
+
+    elif node_kind in ASSIGNMENT_OPERATORS:
+      ret = self.eval_assignment_operation(node)
 
     return ret
 
@@ -63,6 +75,11 @@ class Evaluator:
     elif oper == TR_Node_Kind.POW: ret = left ** right
 
     return ret
+
+  def eval_assignment_operation(self, node):
+    var = node.var
+    expr = self.eval(node.expr)
+    print(var, expr)
 
 # ---
 
