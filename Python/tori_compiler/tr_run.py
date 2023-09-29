@@ -1,5 +1,6 @@
 import re
 import sys
+import time
 import copy
 
 from tr_node import TR_Node_Kind
@@ -62,6 +63,7 @@ class Evaluator:
       "#exit": self.tr_pf_exit,
       "#del": self.tr_pf_del,
       "#type": self.tr_pf_type,
+      "#time": self.tr_pf_time,
     }
 
   def eval(self, node):
@@ -476,6 +478,15 @@ class Evaluator:
     elif arg_kind == TR_Value_Kind.func_:
       ret.value = "func"
 
+    return ret
+
+  def tr_pf_time(self, args):
+    self.check_pyfunc_args_count(args, [0])
+  
+    ret = TR_Value()
+    ret.kind = TR_Value_Kind.num_
+    ret.value = time.time()
+  
     return ret
 
 # ---
