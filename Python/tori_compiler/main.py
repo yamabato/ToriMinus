@@ -5,10 +5,7 @@ from tr_run import tori_minus_run
 from tr_show_tree import show_trees
 
 program = """
-ret = #if(1==2, 2**3, 3**4);
-#print(ret, "\n");
-n = 0;
-#while(n<10, n={(), #print(#to_str(n) + "\n"), n+=1}());
+#for(n=0, n<10, n+=1, #print(#to_str(n) + "\n"));
 """
 
 tokens = tr_lexer(program)
