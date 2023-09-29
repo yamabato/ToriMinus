@@ -451,7 +451,7 @@ class Evaluator:
     else:
       ret = TR_Value()
       ret.kind = TR_Value_Kind.non_
-      if len(args) >= 2:
+      if len(args) >= 3:
         ret = self.eval(args[2])
 
     return ret
