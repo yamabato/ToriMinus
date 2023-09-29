@@ -32,7 +32,7 @@ class Evaluator:
       ret = self.eval_str(node)
 
     elif node_kind in ARITHMETIC_OPERATORS:
-      ret = eval_arithemetic_operation(node)
+      ret = self.eval_arithemetic_operation(node)
 
     return ret
 
