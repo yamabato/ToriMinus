@@ -1,1 +1,5 @@
 *.swp
+*.swo
+Python/__pycache__
+Python/tori_compiler/__pycache__
+Python/tests/__pycache__

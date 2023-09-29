@@ -1,0 +1,24 @@
+N = 100;
+
+#for(
+  n = 1,
+  n < N+1,
+  n += 1,
+
+  {(),
+
+   #if(
+     n % 15 == 0,
+     #print("FizzBuzz\n"),
+     #if(
+       n % 3 == 0,
+       #print("Fizz\n"),
+       #if(
+         n % 5 == 0,
+         #print("Buzz\n"),
+         #print(n, "\n")
+       )
+     )
+  )
+  }()
+);
