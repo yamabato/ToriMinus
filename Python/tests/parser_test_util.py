@@ -31,8 +31,20 @@ def expand_tree(tree):
   elif node_type == TR_Node_Kind.ADD:
     expanded += f"ADD({expand_tree(tree.left)}, {expand_tree(tree.right)})"
 
+  elif node_type == TR_Node_Kind.SUB:
+    expanded += f"SUB({expand_tree(tree.left)}, {expand_tree(tree.right)})"
+
   elif node_type == TR_Node_Kind.MUL:
     expanded += f"MUL({expand_tree(tree.left)}, {expand_tree(tree.right)})"
+
+  elif node_type == TR_Node_Kind.DIV:
+    expanded += f"DIV({expand_tree(tree.left)}, {expand_tree(tree.right)})"
+
+  elif node_type == TR_Node_Kind.MOD:
+    expanded += f"MOD({expand_tree(tree.left)}, {expand_tree(tree.right)})"
+
+  elif node_type == TR_Node_Kind.POW:
+    expanded += f"POW({expand_tree(tree.left)}, {expand_tree(tree.right)})"
 
   elif node_type == TR_Node_Kind.MINUS:
     expanded += f"MINUS({expand_tree(tree.right)})"
