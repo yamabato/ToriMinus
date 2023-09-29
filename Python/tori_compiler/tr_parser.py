@@ -82,7 +82,7 @@ def parse_assignment(tokens, n):
 
     node = TR_Node()
     node.kind = ASSIGN_OPER_KIND[next_token.value]
-    node.var = var 
+    node.var = var
     node.expr = expr 
 
   else:

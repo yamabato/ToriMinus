@@ -48,8 +48,8 @@ class Evaluator:
 
     return ret
 
+  # ---
   # 各ノードの評価
-
   def eval_int(self, node):
     value = node.value
     return int(value)
@@ -78,8 +78,17 @@ class Evaluator:
 
   def eval_assignment_operation(self, node):
     var = node.var
-    expr = self.eval(node.expr)
-    print(var, expr)
+    expr = node.expr
+    value = self.eval(node.expr)
+    self.assign(var, value)
+
+    return value
+
+  # ---
+  
+  def assign(self, var, value):
+    name = var.value
+    self.env[name] = value
 
 # ---
 
