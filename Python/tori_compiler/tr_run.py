@@ -36,6 +36,10 @@ def eval_dec(node):
   value = node.value
   return float(value)
 
+def eval_str(node):
+  value = node.value
+  return value
+
 # ---
 
 def tr_eval(node):
@@ -44,8 +48,11 @@ def tr_eval(node):
   if node_kind == TR_Node_Kind.INT:
     ret = eval_int(node)
 
-  if node_kind == TR_Node_Kind.DEC:
+  elif node_kind == TR_Node_Kind.DEC:
     ret = eval_dec(node)
+
+  elif node_kind == TR_Node_Kind.STR:
+    ret = eval_str(node)
 
   elif node_kind in ARITHMETIC_OPERATORS:
     ret = eval_arithemetic_operation(node)
