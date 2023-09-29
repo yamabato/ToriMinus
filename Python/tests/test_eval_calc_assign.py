@@ -28,4 +28,16 @@ def test_eval_CALC_ASSIGN_06():
   ret = run_tori_minus_test_code("a=10; a**=5;")
   assert ret == 100000 
 
+def test_eval_CALC_ASSIGN_07():
+  ret = run_tori_minus_test_code("a=`true`; a&=`false`;")
+  assert not ret
+
+def test_eval_CALC_ASSIGN_08():
+  ret = run_tori_minus_test_code("a=`true`; a|=`false`;")
+  assert ret
+
+def test_eval_CALC_ASSIGN_09():
+  ret = run_tori_minus_test_code("a=`true`; a^=`false`;")
+  assert ret
+
 # ---
