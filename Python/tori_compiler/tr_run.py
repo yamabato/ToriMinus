@@ -11,6 +11,11 @@ from tr_show_tree import pretty_node
 # ---
 # 定数等の設定
 
+UNARY_OPERATORS = [
+  TR_Node_Kind.MINUS,
+  TR_Node_Kind.NOT,
+]
+
 ARITHMETIC_OPERATORS = [
   TR_Node_Kind.ADD,
   TR_Node_Kind.SUB,
@@ -18,6 +23,12 @@ ARITHMETIC_OPERATORS = [
   TR_Node_Kind.DIV,
   TR_Node_Kind.MOD,
   TR_Node_Kind.POW
+]
+
+LOGICAL_OPERATORS = [
+  TR_Node_Kind.AND,
+  TR_Node_Kind.OR,
+  TR_Node_Kind.XOR,
 ]
 
 ASSIGNMENT_OPERATORS = [
@@ -95,11 +106,14 @@ class Evaluator:
     elif node_kind == TR_Node_Kind.VAR:
       ret = self.eval_var(node)
 
-    elif node_kind == TR_Node_Kind.MINUS:
+    elif node_kind in UNARY_OPERATORS:
       ret = self.eval_unary(node)
 
     elif node_kind in ARITHMETIC_OPERATORS:
       ret = self.eval_arithemetic_operation(node)
+
+    elif node_kind in LOGICAL_OPERATORS:
+      ret = self.eval_logical_operation(node)
 
     elif node_kind in ASSIGNMENT_OPERATORS:
       ret = self.eval_assignment_operation(node)
@@ -162,8 +176,9 @@ class Evaluator:
       sys.exit()
 
   def eval_unary(self, node):
+    ret = TR_Value()
+
     if node.kind == TR_Node_Kind.MINUS:
-      ret = TR_Value()
       value = self.eval(node.right)
       if value.kind == TR_Value_Kind.num_:
         ret.kind = TR_Value_Kind.num_
@@ -171,6 +186,15 @@ class Evaluator:
       else:
         print("ERROR")
         sys.exit
+
+    elif node.kind == TR_Node_Kind.NOT:
+      value = self.eval(node.right)
+      if value.kind == TR_Value_Kind.bool_:
+        ret.kind = TR_Value_Kind.bool_
+        ret.value = bool_to_tr_bool(not value)
+      else:
+        print("ERROR")
+        sys.exit()
 
     return ret
 
@@ -227,6 +251,34 @@ class Evaluator:
 
     return ret
 
+  def eval_logical_operation(self, node):
+    left = self.eval(node.left)
+    right = self.eval(node.right)
+
+    left_kind = left.kind
+    right_kind = right.kind
+
+    left_value = BOOL_VALUE_TABLE[left.value]
+    right_value = BOOL_VALUE_TABLE[right.value]
+
+    oper = node.kind
+
+    if left_kind != TR_Value_Kind.bool_ or right_kind != TR_Value_Kind.bool_:
+      print("ERROR")
+      sys.exit()
+   
+    ret = TR_Value()
+    ret.kind = TR_Value_Kind.bool_
+    if oper == TR_Node_Kind.AND:
+      ret.value = left_value & right_value 
+    elif oper == TR_Node_Kind.OR:
+      ret.value = left_value | right_value 
+    elif oper == TR_Node_Kind.XOR:
+      ret.value = left_value ^ right_value 
+    
+    ret.value = bool_to_tr_bool(ret.value)
+    return ret
+ 
   def eval_assignment_operation(self, node):
     var = node.var
     expr = node.expr
