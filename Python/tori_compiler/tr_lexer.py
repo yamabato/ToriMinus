@@ -97,8 +97,8 @@ def read_ident_literal(program, n):
 
   return kind, token_value, n
 
-def read_boolean_literal(program, n):
-  kind = TR_Token_Kind.BOOL
+def read_sp_value_literal(program, n):
+  kind = None
   token_value = ""
   
   n, c = get_next_char(program, n)
@@ -106,7 +106,11 @@ def read_boolean_literal(program, n):
     token_value += c
     n, c = get_next_char(program, n)
 
-  if token_value not in BOOLEAN_VALUES:
+  if token_value in BOOLEAN_VALUES:
+    kind = TR_Token_Kind.BOOL
+  elif token_value == "non":
+    kind = TR_Token_Kind.NON
+  else:
     print("ERROR")
     sys.exit()
 
@@ -205,9 +209,9 @@ def tr_lexer(program):
       token = TR_Token(kind, value)
       tokens.append(token)
 
-    # Token_Kind.BOOL
+    # Token_Kind.BOOL, Token_Kind.NON
     elif char_type == TR_Char_Type.SP_VALUE_SIGN:
-      kind, value, n = read_boolean_literal(program, n)
+      kind, value, n = read_sp_value_literal(program, n)
       token = TR_Token(kind, value)
       tokens.append(token)
 
