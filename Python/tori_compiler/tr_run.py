@@ -1,3 +1,5 @@
+import sys
+
 from tr_node import TR_Node_Kind
 
 # ---
@@ -40,6 +42,9 @@ class Evaluator:
     elif node_kind == TR_Node_Kind.STR:
       ret = self.eval_str(node)
 
+    elif node_kind == TR_Node_Kind.VAR:
+      ret = self.eval_var(node)
+
     elif node_kind in ARITHMETIC_OPERATORS:
       ret = self.eval_arithemetic_operation(node)
 
@@ -65,6 +70,14 @@ class Evaluator:
   def eval_str(self, node):
     value = node.value
     return value
+
+  def eval_var(self, node):
+    name = node.value
+    if name in self.env:
+      return self.env[name]
+    else:
+      print("ERROR:", name)
+      sys.exit()
 
   def eval_arithemetic_operation(self, node):
     left = self.eval(node.left)

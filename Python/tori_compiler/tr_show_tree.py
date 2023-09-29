@@ -22,8 +22,20 @@ def pretty_node(node):
   elif node_kind == TR_Node_Kind.ADD:
     return f"({pretty_node(node.left)} + {pretty_node(node.right)})"
 
+  elif node_kind == TR_Node_Kind.SUB:
+    return f"({pretty_node(node.left)} - {pretty_node(node.right)})"
+
   elif node_kind == TR_Node_Kind.MUL:
     return f"({pretty_node(node.left)} * {pretty_node(node.right)})"
+
+  elif node_kind == TR_Node_Kind.DIV:
+    return f"({pretty_node(node.left)} / {pretty_node(node.right)})"
+
+  elif node_kind == TR_Node_Kind.MOD:
+    return f"({pretty_node(node.left)} % {pretty_node(node.right)})"
+
+  elif node_kind == TR_Node_Kind.POW:
+    return f"({pretty_node(node.left)} ** {pretty_node(node.right)})"
 
   elif node_kind == TR_Node_Kind.MINUS:
     return f"(-{pretty_node(node.right)})"
@@ -86,4 +98,3 @@ def pretty_node(node):
   elif node_kind == TR_Node_Kind.PYFUNC:
     funcs = ", ".join(node.funcs)
     return f"PYFUNC {funcs};"
-

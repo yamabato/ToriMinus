@@ -89,7 +89,7 @@ def parse_assignment(tokens, n):
     var, n = parse_var(tokens, n)
     oper_token = next_token.value
     expr, n = parse_expression(tokens, n+1)
-    
+
     if oper_token in CALC_ASSIGN_OPER_TABLE:
       oper = CALC_ASSIGN_OPER_TABLE[oper_token]
       expr = make_binary_operation_node(oper, var, expr)
