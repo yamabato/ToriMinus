@@ -58,6 +58,7 @@ class Evaluator:
       "#print": self.tr_pf_print,
       "#len": self.tr_pf_len,
       "#to_num": self.tr_pf_to_num,
+      "#to_str": self.tr_pf_to_str,
     }
 
   def eval(self, node):
@@ -393,6 +394,27 @@ class Evaluator:
       print("ERROR")
       sys.exit()
 
+    return ret
+
+  def tr_pf_to_str(self, args):
+    self.check_pyfunc_args_count(args, 1)
+
+    arg = args[0]
+    arg_kind = arg.kind
+
+    ret = TR_Value()
+    if arg_kind == TR_Value_Kind.num_:
+      ret.value = str(arg.value)
+    elif arg_kind == TR_Value_Kind.str_:
+      ret.value = arg.value
+    elif arg_kind == TR_Value_Kind.bool_:
+      ret.value = f"`{arg.value}`"
+    elif arg_kind == TR_Value_Kind.non_:
+      ret.value = "`non`"
+    elif arg_kind == TR_Value_Kind.func_:
+      ret.value = self.pretty_value(arg)
+
+    ret.kind = TR_Value_Kind.str_
     return ret
 
 # ---

@@ -5,7 +5,7 @@ from tr_run import tori_minus_run
 from tr_show_tree import show_trees
 
 program = """
-#print(#to_num("1.")*2, "\n");
+#print(#to_str({(a, b),a**b, #print(a+b)})*2, "\n");
 """
 
 tokens = tr_lexer(program)
