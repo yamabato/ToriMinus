@@ -32,16 +32,23 @@ def eval_int(node):
   value = node.value
   return int(value)
 
+def eval_dec(node):
+  value = node.value
+  return float(value)
+
 # ---
 
 def tr_eval(node):
   node_kind = node.kind
 
-  if node_kind in ARITHMETIC_OPERATORS:
-    ret = eval_arithemetic_operation(node)
-
-  elif node_kind == TR_Node_Kind.INT:
+  if node_kind == TR_Node_Kind.INT:
     ret = eval_int(node)
+
+  if node_kind == TR_Node_Kind.DEC:
+    ret = eval_dec(node)
+
+  elif node_kind in ARITHMETIC_OPERATORS:
+    ret = eval_arithemetic_operation(node)
 
   return ret
 
