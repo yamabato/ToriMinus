@@ -62,7 +62,7 @@ def expand_tree(tree):
     expanded += f"XOR({expand_tree(tree.left)}, {expand_tree(tree.right)})"
 
   elif node_type == TR_Node_Kind.NOT:
-    expanded += f"NOT({expand_tree(tree.left)})"
+    expanded += f"NOT({expand_tree(tree.right)})"
 
   elif node_type == TR_Node_Kind.MINUS:
     expanded += f"MINUS({expand_tree(tree.right)})"

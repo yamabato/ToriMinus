@@ -7,7 +7,7 @@ from tr_show_tree import show_trees
 program = """
 !`true`;
 `true` & `true`;
-`true` | `true`;
+!`true` | `true` ^ `false`;
 `true` ^ `true`;
 """
 
