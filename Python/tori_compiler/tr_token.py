@@ -10,6 +10,7 @@ class TR_Token_Kind(IntEnum):
   INT = auto()
   DEC = auto()
   BOOL = auto()
+  NON = auto()
   IDENT = auto()
   PYFUNC_IDENT = auto()
   STRING = auto()
@@ -23,4 +24,4 @@ class TR_Char_Type(IntEnum):
   PUNCT_LETTER = auto()
   COMMENT = auto()
   PYFUNC_PREFIX = auto()
-  BOOL_SIGN = auto()
+  SP_VALUE_SIGN = auto()
