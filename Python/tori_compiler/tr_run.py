@@ -1,6 +1,7 @@
 import sys
 
 from tr_node import TR_Node_Kind
+from tr_value import TR_Value, TR_Value_Kind
 
 # ---
 # 定数等の設定
@@ -37,6 +38,12 @@ BOOL_VALUE_TABLE = {
   "true": True,
   "false": False,
 }
+
+# ---
+
+def bool_to_tr_bool(value):
+  if value: return "true"
+  return "false"
 
 # ---
 
@@ -86,23 +93,33 @@ class Evaluator:
   # ---
   # 各ノードの評価
   def eval_int(self, node):
-    value = node.value
-    return int(value)
+    tr_value = TR_Value()
+    tr_value.kind = TR_Value_Kind.num_
+    tr_value.value = node.value
+    return tr_value
 
   def eval_dec(self, node):
-    value = node.value
-    return float(value)
+    tr_value = TR_Value()
+    tr_value.kind = TR_Value_Kind.num_
+    tr_value.value = node.value
+    return tr_value
 
   def eval_str(self, node):
-    value = node.value
-    return value
+    tr_value = TR_Value()
+    tr_value.kind = TR_Value_Kind.str_
+    tr_value.value = node.value
+    return tr_value
 
   def eval_bool(self, node):
-    value = BOOL_VALUE_TABLE[node.value]
-    return value
+    tr_value = TR_Value()
+    tr_value.kind = TR_Value_Kind.bool_
+    tr_value.value = node.value
+    return tr_value
 
   def eval_non(self, node):
-    return None
+    tr_value = TR_Value()
+    tr_value.kind = TR_Value_Kind.non_
+    return tr_value
 
   def eval_var(self, node):
     name = node.value
@@ -114,19 +131,67 @@ class Evaluator:
 
   def eval_unary(self, node):
     if node.kind == TR_Node_Kind.MINUS:
-      return -self.eval(node.right)
+      ret = TR_Value()
+      value = self.eval(node.right)
+      if value.kind == TR_Value_Kind.num_:
+        ret.kind = TR_Value_Kind.num_
+        ret.value = -value.value
+      else:
+        print("ERROR")
+        sys.exit
+
+    return ret
 
   def eval_arithemetic_operation(self, node):
     left = self.eval(node.left)
     right = self.eval(node.right)
-    oper = node.kind
 
-    if oper == TR_Node_Kind.ADD: ret = left + right
-    elif oper == TR_Node_Kind.SUB: ret = left - right
-    elif oper == TR_Node_Kind.MUL: ret = left * right
-    elif oper == TR_Node_Kind.DIV: ret = left / right
-    elif oper == TR_Node_Kind.MOD: ret = left % right
-    elif oper == TR_Node_Kind.POW: ret = left ** right
+    left_kind = left.kind
+    right_kind = right.kind
+
+    left_value = left.value
+    right_value = right.value
+
+    oper = node.kind
+    
+    if left_kind == TR_Value_Kind.num_ and right_kind == TR_Value_Kind.num_:
+      if oper == TR_Node_Kind.ADD: ret_value = left_value + right_value
+      elif oper == TR_Node_Kind.SUB: ret_value = left_value - right_value
+      elif oper == TR_Node_Kind.MUL: ret_value = left_value * right_value
+      elif oper == TR_Node_Kind.DIV: ret_value = left_value / right_value
+      elif oper == TR_Node_Kind.MOD: ret_value = left_value % right_value
+      elif oper == TR_Node_Kind.POW: ret_value = left_value ** right_value
+      else:
+        print("ERROR")
+        sys.exit()
+
+      ret = TR_Value()
+      ret.kind = TR_Value_Kind.num_
+      ret.value = ret_value
+
+    elif left_kind == TR_Value_Kind.str_ and right_kind == TR_Value_Kind.num_:
+      if oper == TR_Node_Kind.MUL: ret_value = left_value * int(right_value)
+      else:
+        print("ERROR")
+        sys.exit()
+
+      ret = TR_Value()
+      ret.kind = TR_Value_Kind.str_
+      ret.value = ret_value
+
+    elif left_kind == TR_Value_Kind.str_ and right_kind == TR_Value_Kind.str_:
+      if oper == TR_Node_Kind.ADD: ret_value = left_value + right_value
+      else:
+        print("ERROR")
+        sys.exit()
+
+      ret = TR_Value()
+      ret.kind = TR_Value_Kind.str_
+      ret.value = ret_value
+
+    else:
+      print("ERROR")
+      sys.exit()
 
     return ret
 
@@ -141,22 +206,47 @@ class Evaluator:
   def eval_comparison_operation(self, node):
     left = self.eval(node.left)
     right = self.eval(node.right)
-    oper = node.kind
 
+    left_kind = left.kind
+    right_kind = right.kind
+
+    left_value = left.value
+    right_value = right.value
+
+    oper = node.kind
     
     if oper == TR_Node_Kind.EQUAL:
-      ret = left == right
+      ret_value = (left_kind == right_kind) & (left_value == right_value)
     elif oper == TR_Node_Kind.NEQ:
-      ret = left != right
+      ret_value = (left_kind != right_kind) | (left_value != right_value)
     elif oper == TR_Node_Kind.LT:
-      ret = left < right
+      if left_kind == TR_Value_Kind.num_ and right_kind == TR_Value_Kind.num_:
+        ret_value = left_value < right_value
+      else:
+        print("ERROR")
+        sys.exit()
     elif oper == TR_Node_Kind.GT:
-      ret = left > right
+      if left_kind == TR_Value_Kind.num_ and right_kind == TR_Value_Kind.num_:
+        ret_value = left_value > right_value
+      else:
+        print("ERROR")
+        sys.exit()
     elif oper == TR_Node_Kind.LEQ:
-      ret = left <= right
+      if left_kind == TR_Value_Kind.num_ and right_kind == TR_Value_Kind.num_:
+        ret_value = left_value <= right_value
+      else:
+        print("ERROR")
+        sys.exit()
     elif oper == TR_Node_Kind.GEQ:
-      ret = left >= right
+      if left_kind == TR_Value_Kind.num_ and right_kind == TR_Value_Kind.num_:
+        ret_value = left_value >= right_value
+      else:
+        print("ERROR")
+        sys.exit()
 
+    ret = TR_Value()
+    ret.kind = TR_Value_Kind.bool_
+    ret.value = bool_to_tr_bool(ret_value)
     return ret
 
   # ---

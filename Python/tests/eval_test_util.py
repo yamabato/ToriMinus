@@ -11,6 +11,21 @@ def run_tori_minus_test_code(code):
   for tree in trees:
     ret = evaluator.eval(tree)
 
-  return ret
+  return get_ret_value(ret)
+
+def get_ret_value(ret):
+  ret_kind = ret.kind
+
+  if ret_kind == TR_Value_Kind.num_:
+    return float(ret.value)
+ 
+  elif ret_kind == TR_Value_Kind.str_:
+    return ret.value
+ 
+  elif ret_kind == TR_Value_Kind.bool_:
+    return ret.value == "true"
+
+  elif ret_kind == TR_Value_Kind.non_:
+    return None
  
 # ---
