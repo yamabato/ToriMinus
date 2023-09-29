@@ -68,8 +68,9 @@ def bool_to_tr_bool(value):
 
 env_global = {}
 class Evaluator:
-  def __init__(self):
+  def __init__(self, level=0):
     self.env = {}
+    self.level = level 
 
     self.pyfunc_table = {
       "#if": self.tr_pf_if,
@@ -174,8 +175,8 @@ class Evaluator:
 
   def eval_var(self, node):
     name = node.value
-    if name in env_global:
-      return env_global[name]
+    if name in self.env:
+      return self.env[name]
     else:
       print("ERROR:", name)
       sys.exit()
@@ -356,8 +357,8 @@ class Evaluator:
 
     args = node.args
 
-    func_evaluator = Evaluator()
-    func_evaluator.env = copy.deepcopy(env_global)
+    func_evaluator = Evaluator(self.level+1)
+    func_evaluator.env = copy.deepcopy(self.env)
 
     if len(func_args) != len(args):
       print("ERROR")
@@ -388,7 +389,9 @@ class Evaluator:
   
   def assign(self, var, value):
     name = var.value
-    env_global[name] = value
+    self.env[name] = value
+    if self.level == 0:
+      env_global[name] = value
 
   def pretty_value(self, value):
     value_kind = value.kind
@@ -620,7 +623,7 @@ class Evaluator:
       print("ERROR")
       sys.exit()
 
-    env_global[var.value] = val
+    self.assign(var, val)
 
     return val
 
@@ -632,11 +635,13 @@ class Evaluator:
       print("ERROR")
       sys.exit()
 
-    if arg.value not in env_global:
+    if arg.value not in self.env:
       print("ERROR")
       sys.exit()
 
-    del env_global[arg.value]    
+    del self.env[arg.value]    
+    if self.level == 0:
+      del env_global[arg.value]
 
     ret = TR_Value()
     ret.kind = TR_Value_Kind.non_
