@@ -60,6 +60,7 @@ class Evaluator:
       "#to_num": self.tr_pf_to_num,
       "#to_str": self.tr_pf_to_str,
       "#exit": self.tr_pf_exit,
+      "#del": self.tr_pf_del,
     }
 
   def eval(self, node):
@@ -312,8 +313,7 @@ class Evaluator:
       print("ERRO")
       sys.exit()
     
-    args_evaluated = [self.eval(arg) for arg in args]
-    ret = self.pyfunc_table[name](args_evaluated)
+    ret = self.pyfunc_table[name](args)
     return ret
 
   # ---
@@ -341,6 +341,10 @@ class Evaluator:
 
       return f"{{({args_}), ({exprs_})}}"
 
+  def eval_args(self, args):
+    args_evaluated = [self.eval(arg) for arg in args]
+    return args_evaluated
+
   def check_pyfunc_args_count(self, args, length):
     if len(args) not in length:
       print("ERROR")
@@ -363,6 +367,7 @@ class Evaluator:
   # pyfunc
 
   def tr_pf_print(self, args):
+    args = self.eval_args(args)
     output = [] 
     for arg in args:
       output.append(self.pretty_value(arg))
@@ -373,6 +378,7 @@ class Evaluator:
     return ret
 
   def tr_pf_len(self, args):
+    args = self.eval_args(args)
     self.check_pyfunc_args_count(args, [1])
     self.check_pyfunc_args_type(args, [TR_Value_Kind.str_])
 
@@ -383,6 +389,7 @@ class Evaluator:
     return ret
 
   def tr_pf_to_num(self, args):
+    args = self.eval_args(args)
     self.check_pyfunc_args_count(args, [1])
     self.check_pyfunc_args_type(args, [TR_Value_Kind.str_])
 
@@ -398,6 +405,7 @@ class Evaluator:
     return ret
 
   def tr_pf_to_str(self, args):
+    args = self.eval_args(args)
     self.check_pyfunc_args_count(args, [1])
 
     arg = args[0]
@@ -419,6 +427,7 @@ class Evaluator:
     return ret
 
   def tr_pf_exit(self, args):
+    args = self.eval_args(args)
     self.check_pyfunc_args_count(args, [0, 1])
     
     code = 0
@@ -427,6 +436,24 @@ class Evaluator:
       code = args[0].value
 
     sys.exit(code)
+
+  def tr_pf_del(self, args):
+    self.check_pyfunc_args_count(args, [1])
+
+    arg = args[0]
+    if arg.kind != TR_Node_Kind.VAR:
+      print("ERROR")
+      sys.exit()
+
+    if arg.value not in self.env:
+      print("ERROR")
+      sys.exit()
+
+    del self.env[arg.value]    
+
+    ret = TR_Value()
+    ret.kind = TR_Value_Kind.non_
+    return ret
 
 # ---
 
