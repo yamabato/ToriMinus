@@ -83,6 +83,7 @@ class Evaluator:
       "#to_num": self.tr_pf_to_num,
       "#to_str": self.tr_pf_to_str,
       "#to_bool": self.tr_pf_to_bool,
+      "#is_numerical": self.tr_pf_is_numerical,
       "#exit": self.tr_pf_exit,
       "#set_global": self.tr_pf_set_global,
       "#del": self.tr_pf_del,
@@ -604,6 +605,18 @@ class Evaluator:
     ret.kind = TR_Value_Kind.bool_
     return ret
 
+  def tr_pf_is_numerical(self, args):
+    args = self.eval_args(args)
+    self.check_pyfunc_args_count(args, [1])
+    self.check_pyfunc_args_type(args, [TR_Value_Kind.str_])
+
+    str_ = args[0]
+
+    ret = TR_Value()
+    ret.kind = TR_Value_Kind.bool_
+    ret.value = self.is_num(str_.value)
+
+    return ret
 
   def tr_pf_exit(self, args):
     args = self.eval_args(args)
