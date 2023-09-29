@@ -14,6 +14,6 @@ def test_parser_EQUAL_02():
 
 def test_parser_EQUAL_03():
   expanded_code = get_expanded_code("a**2==1+2;")
-  assert expanded_code == "EQUAL(POWER(VAR(a), INT(2)), ADD(INT(1), INT(2)))" 
+  assert expanded_code == "EQUAL(POW(VAR(a), INT(2)), ADD(INT(1), INT(2)))" 
 
 # ---

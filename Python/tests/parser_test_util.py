@@ -38,7 +38,7 @@ def expand_tree(tree):
     expanded += f"MINUS({expand_tree(tree.right)})"
 
   elif node_type == TR_Node_Kind.POW:
-    expanded += f"POWER({expand_tree(tree.left)}, {expand_tree(tree.right)})"
+    expanded += f"POW({expand_tree(tree.left)}, {expand_tree(tree.right)})"
 
   elif node_type == TR_Node_Kind.ASSIGN:
     expanded += f"ASSIGN({expand_tree(tree.var)}, {expand_tree(tree.expr)})"
