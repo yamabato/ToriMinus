@@ -5,9 +5,13 @@ from tr_run import tori_minus_run
 from tr_show_tree import show_trees
 
 program = """
-#print(#index("abc", 0) + "\n");
+!`true`;
+`true` & `true`;
+`true` | `true`;
+`true` ^ `true`;
 """
 
 tokens = tr_lexer(program)
 trees = tr_parser(tokens)
+show_trees(trees)
 tori_minus_run(trees)

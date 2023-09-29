@@ -105,13 +105,49 @@ def parse_assignment(tokens, n):
   return node, n
 
 def parse_comparison(tokens, n):
-  node, n = parse_add_sub(tokens, n)
+  node, n = parse_or(tokens, n)
 
   token = get_current_token(tokens, n)
   if token.kind == TR_Token_Kind.PUNCT and token.value in COMPARISON_OPERS:
-    right, n = parse_add_sub(tokens, n+1)
+    right, n = parse_or(tokens, n+1)
     
     node = make_binary_operation_node(COMPARISON_OPER_KIND[token.value], node, right)
+
+  return node, n
+
+def parse_or(tokens, n):
+  node, n = parse_xor(tokens, n)
+
+  while True:
+    token = get_current_token(tokens, n) 
+    if token.kind == TR_Token_Kind.PUNCT and token.value == "|":
+      right, n = parse_xor(tokens, n+1)
+      node = make_binary_operation_node(TR_Node_Kind.OR, node, right)
+    else: break
+
+  return node, n
+
+def parse_xor(tokens, n):
+  node, n = parse_and(tokens, n)
+
+  while True:
+    token = get_current_token(tokens, n) 
+    if token.kind == TR_Token_Kind.PUNCT and token.value == "^":
+      right, n = parse_and(tokens, n+1)
+      node = make_binary_operation_node(TR_Node_Kind.XOR, node, right)
+    else: break
+
+  return node, n
+
+def parse_and(tokens, n):
+  node, n = parse_add_sub(tokens, n)
+
+  while True:
+    token = get_current_token(tokens, n) 
+    if token.kind == TR_Token_Kind.PUNCT and token.value == "&":
+      right, n = parse_add_sub(tokens, n+1)
+      node = make_binary_operation_node(TR_Node_Kind.AND, node, right)
+    else: break
 
   return node, n
 
@@ -156,6 +192,9 @@ def parse_unary(tokens, n):
   elif token.kind == TR_Token_Kind.PUNCT and token.value == "-":
     right, n = parse_power(tokens, n+1)
     node = make_unary_node(TR_Node_Kind.MINUS, right)
+  elif token.kind == TR_Token_Kind.PUNCT and token.value == "!":
+    right, n = parse_power(tokens, n+1)
+    node = make_unary_node(TR_Node_Kind.NOT, right)
   else:
     node, n = parse_power(tokens, n)
 
@@ -416,7 +455,7 @@ def tr_parser(tokens):
         tree, n = parse_expression(tokens, n)
     elif token.kind == TR_Token_Kind.PYFUNC_IDENT: # pyfunc 
       tree, n = parse_expression(tokens, n)
-    elif token.kind == TR_Token_Kind.PUNCT and (token.value == "+" or token.value == "-"): # 単項演算子
+    elif token.kind == TR_Token_Kind.PUNCT and (token.value == "+" or token.value == "-" or token.value == "!"): # 単項演算子
       tree, n = parse_expression(tokens, n)
     elif token.kind == TR_Token_Kind.PUNCT and token.value == "{" and \
           next_token.kind == TR_Token_Kind.PUNCT and next_token.value == "(": # 関数定義

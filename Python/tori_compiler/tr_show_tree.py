@@ -43,6 +43,18 @@ def pretty_node(node):
   elif node_kind == TR_Node_Kind.POW:
     return f"({pretty_node(node.left)} ** {pretty_node(node.right)})"
 
+  elif node_kind == TR_Node_Kind.AND:
+    return f"({pretty_node(node.left)} & {pretty_node(node.right)})"
+
+  elif node_kind == TR_Node_Kind.OR:
+    return f"({pretty_node(node.left)} | {pretty_node(node.right)})"
+
+  elif node_kind == TR_Node_Kind.XOR:
+    return f"({pretty_node(node.left)} ^ {pretty_node(node.right)})"
+
+  elif node_kind == TR_Node_Kind.NOT:
+    return f"(!{pretty_node(node.right)})"
+
   elif node_kind == TR_Node_Kind.MINUS:
     return f"(-{pretty_node(node.right)})"
 

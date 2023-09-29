@@ -50,6 +50,11 @@ class TR_Node_Kind(IntEnum):
   DIV = auto()
   MOD = auto()
 
+  AND = auto()
+  OR = auto()
+  XOR = auto()
+  NOT = auto()
+
   POW = auto()
 
   MINUS = auto()
