@@ -198,7 +198,7 @@ class Evaluator:
       value = self.eval(node.right)
       if value.kind == TR_Value_Kind.bool_:
         ret.kind = TR_Value_Kind.bool_
-        ret.value = bool_to_tr_bool(not value)
+        ret.value = bool_to_tr_bool(not BOOL_VALUE_TABLE[value.value])
       else:
         print("ERROR")
         sys.exit()
