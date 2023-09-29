@@ -3,6 +3,7 @@ import copy
 
 from tr_node import TR_Node_Kind
 from tr_value import TR_Value, TR_Value_Kind
+from tr_show_tree import pretty_node 
 
 # ---
 # 定数等の設定
@@ -52,6 +53,10 @@ class Evaluator:
   def __init__(self):
     self.env = {}
 
+    self.pyfunc_table = {
+      "#print": self.tr_pf_print,
+    }
+
   def eval(self, node):
     node_kind = node.kind
 
@@ -90,6 +95,9 @@ class Evaluator:
 
     elif node_kind == TR_Node_Kind.CALL:
       ret = self.eval_call_function(node)
+
+    elif node_kind == TR_Node_Kind.PYFUNC_CALL:
+      ret = self.eval_pyfunc_call(node)
 
     else:
       print("ERROR:", node_kind)
@@ -291,11 +299,54 @@ class Evaluator:
 
     return ret
 
+  def eval_pyfunc_call(self, node):
+    name = node.name
+    args = node.args
+
+    if name not in self.pyfunc_table:
+      print("ERRO")
+      sys.exit()
+
+    ret = self.pyfunc_table[name](args)
+    return ret
+
   # ---
   
   def assign(self, var, value):
     name = var.value
     self.env[name] = value
+
+  def pretty_value(self, value):
+    value_kind = value.kind
+    if value_kind == TR_Value_Kind.num_:
+      return str(value.value)
+    elif value_kind == TR_Value_Kind.str_:
+      return value.value
+    elif value_kind == TR_Value_Kind.bool_:
+      return f"`{value.value}`"
+    elif value_kind == TR_Value_Kind.non_:
+      return "`non`"
+    elif value_kind == TR_Value_Kind.func_:
+      exprs = value.exprs
+      exprs_ = ", ".join(map(pretty_node, exprs))
+
+      args = value.args
+      args_ = ", ".join(map(pretty_node, args))
+
+      return f"{{({args_}), ({exprs_})}}"
+
+  # ---
+  # pyfunc
+
+  def tr_pf_print(self, args):
+    output = [] 
+    for arg in args:
+      output.append(self.pretty_value(self.eval(arg)))
+
+    print(" ".join(output))
+    ret = TR_Value()
+    ret.kind = TR_Value_Kind.non_
+    return ret
 
 # ---
 
@@ -303,6 +354,5 @@ def tori_minus_run(trees):
   evaluator = Evaluator()
   for tree in trees:
     value = evaluator.eval(tree)
-    print(value)
 
 # ---
