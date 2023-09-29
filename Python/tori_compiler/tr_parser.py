@@ -18,6 +18,15 @@ ASSIGN_OPER_KIND = {
   "**=": TR_Node_Kind.ASSIGN_POW,
 }
 
+CALC_ASSIGN_OPER_TABLE = {
+  "+=": TR_Node_Kind.ADD,
+  "-=": TR_Node_Kind.SUB,
+  "*=": TR_Node_Kind.MUL,
+  "/=": TR_Node_Kind.DIV,
+  "%=": TR_Node_Kind.MOD,
+  "**=": TR_Node_Kind.POW,
+}
+
 COMPARISON_OPERS = [
   "==", "!=", "<", ">", "<=", ">=",
 ]
@@ -48,7 +57,7 @@ def peek_next_token(tokens, n):
 def get_prev_token(tokens, n):
   return get_current_token(tokens, n-1)
 
-def make_binary_operation_node(kind,left, right):
+def make_binary_operation_node(kind, left, right):
   node = TR_Node()
   node.kind = kind
   node.right = right
@@ -78,10 +87,15 @@ def parse_assignment(tokens, n):
   if token.kind == TR_Token_Kind.IDENT and \
       next_token.kind == TR_Token_Kind.PUNCT and next_token.value in ASSIGNMENT_OPERS:
     var, n = parse_var(tokens, n)
+    oper_token = next_token.value
     expr, n = parse_expression(tokens, n+1)
+    
+    if oper_token in CALC_ASSIGN_OPER_TABLE:
+      oper = CALC_ASSIGN_OPER_TABLE[oper_token]
+      expr = make_binary_operation_node(oper, var, expr)
 
     node = TR_Node()
-    node.kind = ASSIGN_OPER_KIND[next_token.value]
+    node.kind = TR_Node_Kind.ASSIGN
     node.var = var
     node.expr = expr 
 

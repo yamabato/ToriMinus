@@ -46,6 +46,10 @@ class Evaluator:
     elif node_kind in ASSIGNMENT_OPERATORS:
       ret = self.eval_assignment_operation(node)
 
+    else:
+      print("ERROR:", node_kind)
+      sys.exit()
+
     return ret
 
   # ---
