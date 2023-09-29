@@ -1,0 +1,21 @@
+sqrt = {
+  (x),
+  x ** (1/2)
+};
+
+is_prime = {
+  (x),
+  N = sqrt(x),
+  prime = `true`,
+  #for(
+    n = 2,
+    n <= N,
+    n += 1,
+    {
+      (),
+      prime &= ((x == n) | (x % n != 0))
+    }()
+  )
+};
+
+#print(#to_str(is_prime(3)) + "\n");
