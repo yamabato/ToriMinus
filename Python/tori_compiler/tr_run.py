@@ -24,6 +24,15 @@ ASSIGNMENT_OPERATORS = [
   TR_Node_Kind.ASSIGN_POW
 ]
 
+COMPARISON_OPERATORS = [
+  TR_Node_Kind.EQUAL,
+  TR_Node_Kind.NEQ,
+  TR_Node_Kind.LT,
+  TR_Node_Kind.GT,
+  TR_Node_Kind.LEQ,
+  TR_Node_Kind.GEQ,
+]
+
 BOOL_VALUE_TABLE = {
   "true": True,
   "false": False,
@@ -64,6 +73,9 @@ class Evaluator:
 
     elif node_kind in ASSIGNMENT_OPERATORS:
       ret = self.eval_assignment_operation(node)
+
+    elif node_kind in COMPARISON_OPERATORS:
+      ret = self.eval_comparison_operation(node)
 
     else:
       print("ERROR:", node_kind)
@@ -125,6 +137,27 @@ class Evaluator:
     self.assign(var, value)
 
     return value
+
+  def eval_comparison_operation(self, node):
+    left = self.eval(node.left)
+    right = self.eval(node.right)
+    oper = node.kind
+
+    
+    if oper == TR_Node_Kind.EQUAL:
+      ret = left == right
+    elif oper == TR_Node_Kind.NEQ:
+      ret = left != right
+    elif oper == TR_Node_Kind.LT:
+      ret = left < right
+    elif oper == TR_Node_Kind.GT:
+      ret = left > right
+    elif oper == TR_Node_Kind.LEQ:
+      ret = left <= right
+    elif oper == TR_Node_Kind.GEQ:
+      ret = left >= right
+
+    return ret
 
   # ---
   

@@ -69,7 +69,7 @@ def test_eval_COMPARE_16():
   assert not ret
 
 def test_eval_COMPARE_17():
-  ret = run_tori_minus_test_code("1 + 2 * 3 == (5 * 2**3 + (7 * 10**1 - 7) / 3 ** 2) % 8")
+  ret = run_tori_minus_test_code("1 + 2 * 3 == (5 * 2**3 + (7 * 10**1 - 7) / 3 ** 2) % 8;")
   assert ret 
 
 # ---
