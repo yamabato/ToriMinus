@@ -16,6 +16,9 @@ ASSIGN_OPER_KIND = {
   "/=": TR_Node_Kind.ASSIGN_DIV,
   "%=": TR_Node_Kind.ASSIGN_MOD,
   "**=": TR_Node_Kind.ASSIGN_POW,
+  "&=": TR_Node_Kind.ASSIGN_AND,
+  "|=": TR_Node_Kind.ASSIGN_OR,
+  "^=": TR_Node_Kind.ASSIGN_XOR,
 }
 
 CALC_ASSIGN_OPER_TABLE = {
@@ -25,6 +28,9 @@ CALC_ASSIGN_OPER_TABLE = {
   "/=": TR_Node_Kind.DIV,
   "%=": TR_Node_Kind.MOD,
   "**=": TR_Node_Kind.POW,
+  "&=": TR_Node_Kind.AND,
+  "|=": TR_Node_Kind.OR,
+  "^=": TR_Node_Kind.XOR,
 }
 
 COMPARISON_OPERS = [

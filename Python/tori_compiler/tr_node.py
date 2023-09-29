@@ -36,6 +36,9 @@ class TR_Node_Kind(IntEnum):
   ASSIGN_DIV = auto()
   ASSIGN_MOD = auto()
   ASSIGN_POW = auto()
+  ASSIGN_AND = auto()
+  ASSIGN_OR = auto()
+  ASSIGN_XOR = auto()
 
   EQUAL = auto()
   NEQ = auto()
