@@ -1,4 +1,5 @@
 import sys
+import copy
 
 from tr_node import TR_Node_Kind
 from tr_value import TR_Value, TR_Value_Kind
@@ -83,6 +84,12 @@ class Evaluator:
 
     elif node_kind in COMPARISON_OPERATORS:
       ret = self.eval_comparison_operation(node)
+
+    elif node_kind == TR_Node_Kind.DEF:
+      ret = self.eval_define_function(node)
+
+    elif node_kind == TR_Node_Kind.CALL:
+      ret = self.eval_call_function(node)
 
     else:
       print("ERROR:", node_kind)
@@ -247,6 +254,41 @@ class Evaluator:
     ret = TR_Value()
     ret.kind = TR_Value_Kind.bool_
     ret.value = bool_to_tr_bool(ret_value)
+    return ret
+
+  def eval_define_function(self, node):
+    args = node.args
+    exprs = node.exprs
+
+    ret = TR_Value()
+    ret.kind = TR_Value_Kind.func_
+    ret.args = args
+    ret.exprs = exprs
+
+    return ret
+
+  def eval_call_function(self, node):
+    func = self.eval(node.func)
+    func_args = func.args
+    func_exprs = func.exprs
+
+    args = node.args
+
+    func_evaluator = Evaluator()
+    func_evaluator.env = copy.deepcopy(self.env)
+
+    if len(func_args) != len(args):
+      print("ERROR")
+      sys.exit()
+
+    for var, expr in zip(func_args, args):
+      func_evaluator.assign(var, func_evaluator.eval(expr))
+      
+    ret = TR_Value()
+    ret.kind = TR_Value_Kind.non_
+    for expr in func_exprs:
+      ret = func_evaluator.eval(expr)
+
     return ret
 
   # ---

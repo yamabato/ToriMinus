@@ -9,15 +9,15 @@ def test_eval_FUNC_01():
   assert ret == 3
 
 def test_eval_FUNC_02():
-  ret = run_tori_minus_test_code("{(), 10*2};")
+  ret = run_tori_minus_test_code("{(), 10*2}();")
   assert ret == 20 
 
 def test_eval_FUNC_03():
-  ret = run_tori_minus_test_code("{(), };")
+  ret = run_tori_minus_test_code("{(), }();")
   assert ret == None
 
 def test_eval_FUNC_04():
-  ret = run_tori_minus_test_code("f = {(x, y), x**y};f(2, 8)")
+  ret = run_tori_minus_test_code("f = {(x, y), x**y};f(2, 8);")
   assert ret == 256
 
 def test_eval_FUNC_05():
