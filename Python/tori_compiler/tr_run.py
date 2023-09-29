@@ -55,6 +55,7 @@ class Evaluator:
 
     self.pyfunc_table = {
       "#print": self.tr_pf_print,
+      "#len": self.tr_pf_len,
     }
 
   def eval(self, node):
@@ -346,6 +347,21 @@ class Evaluator:
     print(" ".join(output))
     ret = TR_Value()
     ret.kind = TR_Value_Kind.non_
+    return ret
+
+  def tr_pf_len(self, args):
+    if len(args) != 1:
+      print("ERROR")
+      sys.exit()
+
+    arg = self.eval(args[0])
+    if arg.kind != TR_Value_Kind.str_:
+      print("ERROR")
+      sys.exit()
+
+    ret = TR_Value()
+    ret.kind = TR_Value_Kind.num_
+    ret.value = len(arg.value)
     return ret
 
 # ---
