@@ -7,7 +7,9 @@ def run_tori_minus_test_code(code):
   evaluator = Evaluator()
   tokens = tr_lexer(code)
   trees = tr_parser(tokens)
-  ret = evaluator.eval(trees[0])
+
+  for tree in trees:
+    ret = evaluator.eval(trees[0])
 
   return ret
  
