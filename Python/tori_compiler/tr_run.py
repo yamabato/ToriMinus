@@ -24,6 +24,11 @@ ASSIGNMENT_OPERATORS = [
   TR_Node_Kind.ASSIGN_POW
 ]
 
+BOOL_VALUE_TABLE = {
+  "true": True,
+  "false": False,
+}
+
 # ---
 
 class Evaluator:
@@ -41,6 +46,9 @@ class Evaluator:
 
     elif node_kind == TR_Node_Kind.STR:
       ret = self.eval_str(node)
+
+    elif node_kind == TR_Node_Kind.BOOL:
+      ret = self.eval_bool(node)
 
     elif node_kind == TR_Node_Kind.VAR:
       ret = self.eval_var(node)
@@ -72,6 +80,10 @@ class Evaluator:
 
   def eval_str(self, node):
     value = node.value
+    return value
+
+  def eval_bool(self, node):
+    value = BOOL_VALUE_TABLE[node.value]
     return value
 
   def eval_var(self, node):
