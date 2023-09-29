@@ -438,7 +438,7 @@ class Evaluator:
   # pyfunc
 
   def tr_pf_if(self, args):
-    self.check_pyfunc_args_count(args, [3])
+    self.check_pyfunc_args_count(args, [2, 3])
 
     cond = self.eval(args[0])
     if cond.kind != TR_Value_Kind.bool_:
@@ -448,7 +448,10 @@ class Evaluator:
     if BOOL_VALUE_TABLE[cond.value]:
       ret = self.eval(args[1])
     else:
-      ret = self.eval(args[2])
+      ret = TR_Value()
+      ret.kind = TR_Value_Kind.non_
+      if len(args) >= 2:
+        ret = self.eval(args[2])
 
     return ret
 
