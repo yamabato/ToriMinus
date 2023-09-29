@@ -59,6 +59,7 @@ class Evaluator:
       "#len": self.tr_pf_len,
       "#to_num": self.tr_pf_to_num,
       "#to_str": self.tr_pf_to_str,
+      "#exit": self.tr_pf_exit,
     }
 
   def eval(self, node):
@@ -341,7 +342,7 @@ class Evaluator:
       return f"{{({args_}), ({exprs_})}}"
 
   def check_pyfunc_args_count(self, args, length):
-    if len(args) != length:
+    if len(args) not in length:
       print("ERROR")
       sys.exit()
 
@@ -372,7 +373,7 @@ class Evaluator:
     return ret
 
   def tr_pf_len(self, args):
-    self.check_pyfunc_args_count(args, 1)
+    self.check_pyfunc_args_count(args, [1])
     self.check_pyfunc_args_type(args, [TR_Value_Kind.str_])
 
     arg = args[0] 
@@ -382,7 +383,7 @@ class Evaluator:
     return ret
 
   def tr_pf_to_num(self, args):
-    self.check_pyfunc_args_count(args, 1)
+    self.check_pyfunc_args_count(args, [1])
     self.check_pyfunc_args_type(args, [TR_Value_Kind.str_])
 
     arg = args[0]
@@ -397,7 +398,7 @@ class Evaluator:
     return ret
 
   def tr_pf_to_str(self, args):
-    self.check_pyfunc_args_count(args, 1)
+    self.check_pyfunc_args_count(args, [1])
 
     arg = args[0]
     arg_kind = arg.kind
@@ -416,6 +417,16 @@ class Evaluator:
 
     ret.kind = TR_Value_Kind.str_
     return ret
+
+  def tr_pf_exit(self, args):
+    self.check_pyfunc_args_count(args, [0, 1])
+    
+    code = 0
+    if len(args) == 1:
+      self.check_pyfunc_args_type(args, [TR_Value_Kind.num_])
+      code = args[0].value
+
+    sys.exit(code)
 
 # ---
 

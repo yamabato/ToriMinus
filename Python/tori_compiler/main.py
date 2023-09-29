@@ -5,6 +5,7 @@ from tr_run import tori_minus_run
 from tr_show_tree import show_trees
 
 program = """
+#exit(1);
 #print(#to_str({(a, b),a**b, #print(a+b)})*2, "\n");
 """
 
