@@ -7,6 +7,8 @@ from tr_show_tree import show_trees
 program = """
 ret = #if(1==2, 2**3, 3**4);
 #print(ret, "\n");
+n = 0;
+#while(n<10, n={(), #print(#to_str(n) + "\n"), n+=1}());
 """
 
 tokens = tr_lexer(program)

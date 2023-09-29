@@ -58,6 +58,7 @@ class Evaluator:
 
     self.pyfunc_table = {
       "#if": self.tr_pf_if,
+      "#while": self.tr_pf_while,
       "#print": self.tr_pf_print,
       "#input": self.tr_pf_input,
       "#len": self.tr_pf_len,
@@ -385,6 +386,21 @@ class Evaluator:
       ret = self.eval(args[1])
     else:
       ret = self.eval(args[2])
+
+    return ret
+
+  def tr_pf_while(self, args):
+    self.check_pyfunc_args_count(args, [2])
+
+    while True:
+      cond = self.eval(args[0])
+      if cond.kind != TR_Value_Kind.bool_:
+        print("ERROR")
+        sys.exit()
+
+      if not BOOL_VALUE_TABLE[cond.value]: break
+
+      ret = self.eval(args[1])
 
     return ret
 
