@@ -1,0 +1,53 @@
+round_down = {
+  (x),
+  x_str = #to_str(x),
+  x_str_len = #len(x_str),
+  is_frac_part = `false`,
+  int_part = "",
+  point_pos = #for(
+    n = 0,
+    n < x_str_len,
+    n += 1,
+    #if(
+      !is_frac_part,
+      #if(
+        (c=#index(x_str, n))==".",
+        is_frac_part = `true`,
+        int_part += c 
+      ),
+      int_part
+    ),
+  ),
+  #to_num(int_part)
+};
+
+num = round_down(#rand()*100+1);
+count = 0;
+#print("秘密の数を当ててください。\n秘密の数は1以上100以下の整数です。\n\n");
+#while(
+  `true`,
+  {(),
+    input = {(), #print("整数を入力してください: "), #input()}(),
+    #if(
+      #is_numerical(input),
+      count = {
+        (),
+        guess = #to_num(input),
+        #if(
+          guess == num,
+          {(), #print("正解\n\n" + #to_str(count)+"回かかりました。\n"), #exit()}(),
+          {
+            (),
+            #if(
+              guess < num,
+              #print("小さい!\n\n"),
+              #print("大きい!\n\n")
+            ),
+            #set_global(count, count+1)
+          }()
+        )
+      }(),
+      #print("整数を入力してください\n\n")
+    )
+  }()
+);
