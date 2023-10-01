@@ -35,7 +35,7 @@ count = 0;
         guess = #to_num(input),
         #if(
           guess == num,
-          {(), #print("正解\n\n" + #to_str(count)+"回かかりました。\n"), #exit()}(),
+          {(), #print("正解\n\n" + #to_str(count+1)+"回かかりました。\n"), #exit()}(),
           {
             (),
             #if(
