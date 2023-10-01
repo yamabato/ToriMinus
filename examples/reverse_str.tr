@@ -1,0 +1,13 @@
+reverse_str = {
+  (text),
+  text_length = #len(text),
+  reversed = "",
+  #for(
+    n = text_length - 1,
+    n >= 0,
+    n -= 1,
+    reversed += #index(text, n)
+  )
+};
+
+#print(reverse_str("Hello, World!!")+"\n");
