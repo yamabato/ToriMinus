@@ -614,7 +614,7 @@ class Evaluator:
 
     ret = TR_Value()
     ret.kind = TR_Value_Kind.bool_
-    ret.value = self.is_num(str_.value)
+    ret.value = bool_to_tr_bool(self.is_num(str_.value))
 
     return ret
 
