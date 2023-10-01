@@ -24,7 +24,7 @@ def pretty_node(node):
     return f"`{node.value}`"
 
   elif node_kind == TR_Node_Kind.VAR:
-    return str(node.value)
+    return f"({str(node.value)})"
 
   elif node_kind == TR_Node_Kind.ADD:
     return f"({pretty_node(node.left)} + {pretty_node(node.right)})"
