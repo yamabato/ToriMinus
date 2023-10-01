@@ -1,0 +1,17 @@
+max = {(n, m), #if(n<m, m, n)};
+get_char = {(str, n), #if(#len(str) <= n, "", #index(str, n))};
+
+patatokukashi = {
+  (str1, str2),
+  max_length = max(#len(str1), #len(str2)),
+  result = "",
+  result = #for(
+    n = 0, n<max_length, n+=1,
+    result = {(), 
+      result += get_char(str1, n),
+      result += get_char(str2, n)
+    }()
+  )
+};
+
+#print(patatokukashi("パトカー", "タクシー") + "\n");

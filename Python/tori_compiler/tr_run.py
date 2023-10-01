@@ -383,7 +383,7 @@ class Evaluator:
     if name not in self.pyfunc_table:
       print("ERROR(eval_pyfunc_call)")
       sys.exit()
-    
+
     ret = self.pyfunc_table[name](args)
     return ret
 
