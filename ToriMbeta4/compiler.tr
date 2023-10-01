@@ -1,0 +1,83 @@
+program = "1 + 1";
+
+n = 0;
+last_token = "";
+current_token = "";
+tree = ""; ~"[+ [N 1] [N 1]]"~
+
+get_char = { (), #index(program, n) };
+proceed_counter = { (), #set_global(n, n+1) };
+shift_token = { (), #set_global(last_token, current_token) };
+clear_current_token = { (), #set_global(current_token, "") };
+update_current_token = { (c), #set_global(current_token, current_token+c) };
+
+is_sign = {
+  (c),
+  judge = `false`,
+  judge |= #if(c=="+", `true`, `false`),
+
+  judge
+};
+
+read_numerical_literal = {
+  (),
+  #for(
+    break = `false`,
+    break,
+    break = `false`,
+    {
+      (),
+      c = get_char(),
+      #if(
+        #is_numerical(c) | (c == "."),
+        {(), update_current_token(c), proceed_counter()}(),
+        break = `true`
+      )
+    }()
+  )
+};
+
+read_sign = {
+  (),
+  #for(
+    break = `false`,
+    break,
+    break = `false`,
+    {
+      (),
+      c = get_char(),
+      #if(
+        is_sign(c),
+        {(), update_current_token(c), proceed_counter()}(),
+        break = `true`
+      )
+    }()
+  )
+};
+
+parser = {
+  (),
+  program_length = #len(program),
+  #while(
+    n < program_length,
+    {
+      (),
+      c = get_char(),
+      processed = `false`,
+      processed |= #if(
+        #is_numerical(c),
+        {(), shift_token(), clear_current_token(), read_numerical_literal(), `true`}(),
+        `false`
+      ),
+      processed |= #if(
+        is_sign(c),
+        {(), shift_token(), clear_current_token(), read_sign(), `true`}(),
+        `false`
+      ),
+      proceed_counter(),
+      #print(current_token, last_token, "\n")
+    }()
+  )
+};
+
+parser();
