@@ -176,7 +176,9 @@ class Evaluator:
 
   def eval_var(self, node):
     name = node.value
-    if name in self.env:
+    if name in env_global:
+      return env_global[name]
+    elif name in self.env:
       return self.env[name]
     else:
       print("ERROR-EVAL(eval_var):", name)
@@ -202,7 +204,6 @@ class Evaluator:
       else:
         print("ERROR-EVAL(evan_unary)")
         sys.exit()
-
     return ret
 
   def eval_arithemetic_operation(self, node):
@@ -639,7 +640,7 @@ class Evaluator:
       print("ERROR-EVAL(set_global)")
       sys.exit()
 
-    self.assign(var, val)
+    env_global[var.value] = val
 
     return val
 
