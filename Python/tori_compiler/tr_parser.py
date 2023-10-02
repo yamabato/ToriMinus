@@ -81,6 +81,20 @@ def make_unary_node(kind, right):
 # ---
 # 各種構文の解析
 
+def parse_if(tokens, n):
+  token, n = get_next_token(tokens, n)
+
+  cond, n = parse_expression(tokens, n)
+  token = get_current_token(tokens, n)
+  if token.kind != TR_Token_Kind.IDENT or token.value == "{":
+    print("ERROR-PARSER-if")
+    sys.exit()
+  token, n = get_next_token(tokens, n)
+
+  if_stmts = None
+
+  return cond, n
+
 def parse_expression(tokens, n):
   node, n = parse_assignment(tokens, n) 
 
@@ -435,6 +449,48 @@ def parse_pyfunc(tokens, n):
 
 # ---
 
+def parse_statement(tokens, n):
+  token = get_current_token(tokens, n)
+  next_token = peek_next_token(tokens, n)
+
+  if token.kind == TR_Token_Kind.INT or token.kind == TR_Token_Kind.DEC: # 数値
+    tree, n = parse_expression(tokens, n)
+  elif token.kind == TR_Token_Kind.STRING: # 文字列
+    tree, n = parse_expression(tokens, n)
+  elif token.kind == TR_Token_Kind.BOOL: # 真偽値 
+    tree, n = parse_expression(tokens, n)
+  elif token.kind == TR_Token_Kind.NON: # non 
+    tree, n = parse_expression(tokens, n)
+  elif token.kind == TR_Token_Kind.PYFUNC_IDENT: # pyfunc 
+    tree, n = parse_expression(tokens, n)
+  elif token.kind == TR_Token_Kind.PUNCT and (token.value == "+" or token.value == "-" or token.value == "!"): # 単項演算子
+    tree, n = parse_expression(tokens, n)
+  elif token.kind == TR_Token_Kind.PUNCT and token.value == "{" and \
+        next_token.kind == TR_Token_Kind.PUNCT and next_token.value == "(": # 関数定義
+    tree, n = parse_expression(tokens, n)
+  elif token.kind == TR_Token_Kind.PUNCT and token.value == "(": # 括弧
+    tree, n = parse_expression(tokens, n)
+
+  elif token.kind == TR_Token_Kind.IDENT:
+    if token.value == "if": # if
+      tree, n = parse_if(tokens, n)
+    else: # 変数
+      tree, n = parse_expression(tokens, n)
+
+  else:
+    print("ERROR-PARSER", token.value, token.kind, next_token.value, next_token.kind)
+    sys.exit()
+  
+  token = get_current_token(tokens, n)
+  if token.kind == TR_Token_Kind.PUNCT and token.value == ";":
+    n += 1
+  else:
+    print("ERROR-PARSER")
+    sys.exit()
+
+  return tree, n
+
+
 def tr_parser(tokens):
   tokens_count = len(tokens)
 
@@ -443,42 +499,7 @@ def tr_parser(tokens):
   n = 0
 
   while n < tokens_count:
-    token = get_current_token(tokens, n)
-    next_token = peek_next_token(tokens, n)
-
-    if token.kind == TR_Token_Kind.INT or token.kind == TR_Token_Kind.DEC: # 数値
-      tree, n = parse_expression(tokens, n)
-    elif token.kind == TR_Token_Kind.STRING: # 文字列
-      tree, n = parse_expression(tokens, n)
-    elif token.kind == TR_Token_Kind.BOOL: # 真偽値 
-      tree, n = parse_expression(tokens, n)
-    elif token.kind == TR_Token_Kind.NON: # non 
-      tree, n = parse_expression(tokens, n)
-    elif token.kind == TR_Token_Kind.IDENT:
-      if token.value == "pyfunc": # pyfunc
-        tree, n = parse_pyfunc(tokens, n)
-      else: # 変数
-        tree, n = parse_expression(tokens, n)
-    elif token.kind == TR_Token_Kind.PYFUNC_IDENT: # pyfunc 
-      tree, n = parse_expression(tokens, n)
-    elif token.kind == TR_Token_Kind.PUNCT and (token.value == "+" or token.value == "-" or token.value == "!"): # 単項演算子
-      tree, n = parse_expression(tokens, n)
-    elif token.kind == TR_Token_Kind.PUNCT and token.value == "{" and \
-          next_token.kind == TR_Token_Kind.PUNCT and next_token.value == "(": # 関数定義
-      tree, n = parse_expression(tokens, n)
-    elif token.kind == TR_Token_Kind.PUNCT and token.value == "(": # 括弧
-      tree, n = parse_expression(tokens, n)
-    else:
-      print("ERROR-PARSER", token.value, token.kind, next_token.value, next_token.kind)
-      sys.exit()
-    
-    token = get_current_token(tokens, n)
-    if token.kind == TR_Token_Kind.PUNCT and token.value == ";":
-      n += 1
-    else:
-      print("ERROR-PARSER")
-      sys.exit()
-
+    tree, n = parse_statement(tokens, n)
     trees.append(tree)
       
   return trees
