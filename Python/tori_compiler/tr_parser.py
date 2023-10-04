@@ -131,6 +131,30 @@ def parse_if(tokens, n):
 
   return node, n+1
  
+def parse_while(tokens, n):
+  token, n = get_next_token(tokens, n)
+
+  node = TR_Node()
+  node.kind = TR_Node_Kind.WHILE
+
+  cond, n = parse_expression(tokens, n)
+  node.cond = cond
+
+  token = get_current_token(tokens, n)
+  if token.kind != TR_Token_Kind.PUNCT and token.value != "{":
+    print("ERROR-PARSER-while")
+    sys.exit()
+
+  token, n = get_next_token(tokens, n)
+  stmts = []
+  while True:
+    token = get_current_token(tokens, n)
+    if token.kind == TR_Token_Kind.PUNCT and token.value == "}": break
+    stmt, n = parse_statement(tokens, n)
+    stmts.append(stmt)
+
+  node.stmts = stmts
+  return node, n+1
 
 def parse_expression(tokens, n):
   node, n = parse_assignment(tokens, n) 
@@ -511,6 +535,8 @@ def parse_statement(tokens, n):
   elif token.kind == TR_Token_Kind.IDENT:
     if token.value == "if": # if
       tree, n = parse_if(tokens, n)
+    elif token.value == "while": # while
+      tree, n = parse_while(tokens, n)
     else: # 変数
       tree, n = parse_expression(tokens, n)
 

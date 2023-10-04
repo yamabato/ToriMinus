@@ -15,6 +15,7 @@ class TR_Node:
   funcs = None
 
   exprs = None
+  stmts = None
   if_stmts = None
   else_stmts = None
 
@@ -65,3 +66,4 @@ class TR_Node_Kind(IntEnum):
   MINUS = auto()
 
   IF  = auto()
+  WHILE = auto()

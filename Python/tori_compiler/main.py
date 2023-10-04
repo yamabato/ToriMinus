@@ -16,6 +16,11 @@ else if a == 2{
 else{
   #print("???\n");
 };
+
+n = 0;
+while n < 10{
+  #print(n, "\n");
+};
 """
 
 tokens = tr_lexer(program)
