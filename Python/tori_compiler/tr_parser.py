@@ -84,16 +84,53 @@ def make_unary_node(kind, right):
 def parse_if(tokens, n):
   token, n = get_next_token(tokens, n)
 
+  node = TR_Node()
+  node.kind = TR_Node_Kind.IF
+
   cond, n = parse_expression(tokens, n)
+  node.cond = cond 
+
   token = get_current_token(tokens, n)
-  if token.kind != TR_Token_Kind.IDENT or token.value == "{":
+  if token.kind != TR_Token_Kind.PUNCT or token.value != "{":
     print("ERROR-PARSER-if")
     sys.exit()
   token, n = get_next_token(tokens, n)
+  
+  if_stmts = [] 
+  else_stmts = [] 
+  while True:
+    token = get_current_token(tokens, n)
+    if token.kind == TR_Token_Kind.PUNCT and token.value == "}": break
+    stmt, n = parse_statement(tokens, n)
+    if_stmts.append(stmt)
+  n += 1
+  node.if_stmts = if_stmts
 
-  if_stmts = None
+  token = get_current_token(tokens, n)
+  if token.kind == TR_Token_Kind.IDENT and token.value == "else":
+    n += 1
+  else:
+    return node, n
 
-  return cond, n
+  token = get_current_token(tokens, n)
+  if token.kind == TR_Token_Kind.IDENT and token.value == "if":
+    else_stmt, n = parse_if(tokens, n)
+    node.else_stmts = [else_stmt]
+    return node, n
+  elif token.kind != TR_Token_Kind.PUNCT and token.value != "{":
+    print("ERROR-PARSER-else")
+    sys.exit()
+
+  token, n = get_next_token(tokens, n)
+  while True:
+    token = get_current_token(tokens, n)
+    if token.kind == TR_Token_Kind.PUNCT and token.value == "}": break
+    stmt, n = parse_statement(tokens, n)
+    else_stmts.append(stmt)
+  node.else_stmts = else_stmts
+
+  return node, n+1
+ 
 
 def parse_expression(tokens, n):
   node, n = parse_assignment(tokens, n) 
