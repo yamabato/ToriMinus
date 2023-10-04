@@ -95,6 +95,7 @@ class Evaluator:
   def eval(self, node):
     node_kind = node.kind
 
+    ret = None
     if node_kind == TR_Node_Kind.INT:
       ret = self.eval_int(node)
 
@@ -136,6 +137,9 @@ class Evaluator:
 
     elif node_kind == TR_Node_Kind.PYFUNC_CALL:
       ret = self.eval_pyfunc_call(node)
+
+    elif node_kind == TR_Node_Kind.IF:
+      self.eval_if(node)
 
     else:
       print("ERROR-EVAL:", node_kind)
@@ -386,6 +390,18 @@ class Evaluator:
 
     ret = self.pyfunc_table[name](args)
     return ret
+
+  def eval_if(self, node):
+    cond = self.eval(node.cond)
+    if_stmts = node.if_stmts
+    else_stmts = node.else_stmts
+
+    if BOOL_VALUE_TABLE[cond.value]:
+      for stmt in if_stmts:
+        self.eval(stmt)
+    else:
+      for stmt in else_stmts:
+        self.eval(stmt)
 
   # ---
   
