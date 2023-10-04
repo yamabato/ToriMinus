@@ -119,4 +119,7 @@ def pretty_node(node):
     return f"pyfunc {funcs};"
 
   elif node_kind == TR_Node_Kind.IF:
-    return f"if({pretty_node(node.cond)}{{{';'.join([pretty_node(stmt) for stmt in node.if_stmts])}}}else({{{';'.join([pretty_node(stmt) for stmt in node.else_stmts])}}}))"
+    return f"if(({pretty_node(node.cond)}){{{';'.join([pretty_node(stmt) for stmt in node.if_stmts])}}}else({{{';'.join([pretty_node(stmt) for stmt in node.else_stmts])}}}))"
+
+  elif node_kind == TR_Node_Kind.WHILE:
+    return f"while(({pretty_node(node.cond)}){{{';'.join([pretty_node(stmt) for stmt in node.stmts])}}})"

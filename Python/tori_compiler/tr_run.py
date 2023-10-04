@@ -141,6 +141,9 @@ class Evaluator:
     elif node_kind == TR_Node_Kind.IF:
       self.eval_if(node)
 
+    elif node_kind == TR_Node_Kind.WHILE:
+      self.eval_while(node)
+
     else:
       print("ERROR-EVAL:", node_kind)
       sys.exit()
@@ -397,11 +400,18 @@ class Evaluator:
     else_stmts = node.else_stmts
 
     if BOOL_VALUE_TABLE[cond.value]:
-      for stmt in if_stmts:
-        self.eval(stmt)
+      for stmt in if_stmts: self.eval(stmt)
     else:
-      for stmt in else_stmts:
-        self.eval(stmt)
+      for stmt in else_stmts: self.eval(stmt)
+
+  def eval_while(self, node):
+    while True:
+      cond = self.eval(node.cond)
+      stmts = node.stmts
+
+      if BOOL_VALUE_TABLE[cond.value]:
+        for stmt in stmts: self.eval(stmt)
+      else: break
 
   # ---
   
