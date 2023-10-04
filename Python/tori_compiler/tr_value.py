@@ -7,9 +7,12 @@ class TR_Value:
   args = None
   exprs = None
 
+  elems = None
+
 class TR_Value_Kind(IntEnum):
   num_ = auto()
   str_ = auto()
+  list_ = auto()
   bool_ = auto()
   non_ = auto()
   func_ = auto()

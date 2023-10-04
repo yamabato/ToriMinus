@@ -105,6 +105,9 @@ class Evaluator:
     elif node_kind == TR_Node_Kind.STR:
       ret = self.eval_str(node)
 
+    elif node_kind == TR_Node_Kind.LIST:
+      ret = self.eval_list(node)
+
     elif node_kind == TR_Node_Kind.BOOL:
       ret = self.eval_bool(node)
 
@@ -171,6 +174,12 @@ class Evaluator:
     tr_value = TR_Value()
     tr_value.kind = TR_Value_Kind.str_
     tr_value.value = node.value
+    return tr_value
+
+  def eval_list(self, node):
+    tr_value = TR_Value()
+    tr_value.kind = TR_Value_Kind.list_
+    tr_value.elems = [self.eval(elem) for elem in node.elems]
     return tr_value
 
   def eval_bool(self, node):
@@ -441,6 +450,8 @@ class Evaluator:
       return str(value.value)
     elif value_kind == TR_Value_Kind.str_:
       return value.value
+    elif value_kind == TR_Value_Kind.list_:
+      return f"[{', '.join([self.pretty_value(elem) for elem in value.elems])}]"
     elif value_kind == TR_Value_Kind.bool_:
       return f"`{value.value}`"
     elif value_kind == TR_Value_Kind.non_:
