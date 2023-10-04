@@ -571,12 +571,15 @@ class Evaluator:
   def tr_pf_len(self, args):
     args = self.eval_args(args)
     self.check_pyfunc_args_count(args, [1])
-    self.check_pyfunc_args_type(args, [[TR_Value_Kind.str_]])
+    self.check_pyfunc_args_type(args, [[TR_Value_Kind.str_], [TR_Value_Kind.list_]])
 
     arg = args[0] 
     ret = TR_Value()
     ret.kind = TR_Value_Kind.num_
-    ret.value = len(arg.value)
+    if arg.kind == TR_Value_Kind.str_:
+      ret.value = len(arg.value)
+    elif arg.kind == TR_Value_Kind.list_:
+      ret.value = len(arg.elems)
     return ret
 
   def tr_pf_index(self, args):
