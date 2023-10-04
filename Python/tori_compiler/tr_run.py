@@ -474,11 +474,18 @@ class Evaluator:
       print("ERROR-EVAL(check_pyfunc_args_count)")
       sys.exit()
 
-  def check_pyfunc_args_type(self, args, types):
-    for arg, t in zip(args, types):
-      if arg.kind != t:
-        print("ERROR-EVAL(check_pyfunc_args_type)")
-        sys.exit()
+  def check_pyfunc_args_type(self, args, types_list):
+    err = True
+    for types in types_list:
+      e = True
+      for arg, t in zip(args, types):
+        if arg.kind != t: e = False
+
+      err |= e
+
+    if not err:
+      print("ERROR-EVAL(check_pyfunc_args_type)")
+      sys.exit()
 
   def is_num(self, str_):
     return bool(re.fullmatch("[+-]?(\d+\.?\d*|\d*\.\d+)", str_))
@@ -564,7 +571,7 @@ class Evaluator:
   def tr_pf_len(self, args):
     args = self.eval_args(args)
     self.check_pyfunc_args_count(args, [1])
-    self.check_pyfunc_args_type(args, [TR_Value_Kind.str_])
+    self.check_pyfunc_args_type(args, [[TR_Value_Kind.str_]])
 
     arg = args[0] 
     ret = TR_Value()
@@ -575,15 +582,15 @@ class Evaluator:
   def tr_pf_index(self, args):
     args = self.eval_args(args)
     self.check_pyfunc_args_count(args, [2])
-    self.check_pyfunc_args_type(args, [TR_Value_Kind.str_, TR_Value_Kind.num_])
+    self.check_pyfunc_args_type(args, [[TR_Value_Kind.str_, TR_Value_Kind.num_], [TR_Value_Kind.list_, TR_Value_Kind.num_]])
 
-    text = args[0]
+    seq = args[0]
     ind = args[1]
+    length = -1
+    if seq.kind == TR_Value_Kind.str_: length = len(seq.value)
+    else: length = len(seq.elems)
     
-    if ind.kind != TR_Value_Kind.num_:
-      print("ERROR-EVAL(index)")
-      sys.exit
-    if len(text.value) <= ind.value or ind.value < 0:
+    if length <= ind.value or length < 0:
       print("ERROR-EVAL(index)")
       sys.exit()
     if int(ind.value) != ind.value:
@@ -591,15 +598,20 @@ class Evaluator:
       sys.exit()
     
     ret = TR_Value()
-    ret.kind = TR_Value_Kind.str_
-    ret.value = text.value[int(ind.value)]
+    if seq.kind == TR_Value_Kind.str_:
+      ret.value = seq.value[int(ind.value)]
+      ret.kind = TR_Value_Kind.str_
+    else:
+      elem = seq.elems[int(ind.value)]
+      ret.value = elem.value
+      ret.kind = elem.kind
 
     return ret
  
   def tr_pf_to_num(self, args):
     args = self.eval_args(args)
     self.check_pyfunc_args_count(args, [1])
-    self.check_pyfunc_args_type(args, [TR_Value_Kind.str_])
+    self.check_pyfunc_args_type(args, [[TR_Value_Kind.str_]])
 
     arg = args[0]
     if self.is_num(arg.value):
@@ -660,7 +672,7 @@ class Evaluator:
   def tr_pf_is_numerical(self, args):
     args = self.eval_args(args)
     self.check_pyfunc_args_count(args, [1])
-    self.check_pyfunc_args_type(args, [TR_Value_Kind.str_])
+    self.check_pyfunc_args_type(args, [[TR_Value_Kind.str_]])
 
     str_ = args[0]
 
@@ -676,7 +688,7 @@ class Evaluator:
     
     code = 0
     if len(args) == 1:
-      self.check_pyfunc_args_type(args, [TR_Value_Kind.num_])
+      self.check_pyfunc_args_type(args, [[TR_Value_Kind.num_]])
       code = args[0].value
 
     sys.exit(code)

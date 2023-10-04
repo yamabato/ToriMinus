@@ -6,6 +6,7 @@ from tr_show_tree import show_trees
 
 program = """
 l = [1,2,3, "abc",];
+#print(#index(l, 2));
 """
 
 tokens = tr_lexer(program)
