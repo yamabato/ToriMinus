@@ -123,3 +123,6 @@ def pretty_node(node):
 
   elif node_kind == TR_Node_Kind.WHILE:
     return f"while(({pretty_node(node.cond)}){{{';'.join([pretty_node(stmt) for stmt in node.stmts])}}})"
+
+  elif node_kind == TR_Node_Kind.FOR:
+    return f"for(({pretty_node(node.init)}, pretty_node(node.cond), pretty_node(node.adv)){{{';'.join([pretty_node(stmt) for stmt in node.stmts])}}}"

@@ -19,6 +19,9 @@ class TR_Node:
   if_stmts = None
   else_stmts = None
 
+  init = None
+  adv = None
+
 class TR_Node_Kind(IntEnum):
   INT = auto()
   DEC = auto()
@@ -67,3 +70,4 @@ class TR_Node_Kind(IntEnum):
 
   IF  = auto()
   WHILE = auto()
+  FOR = auto()

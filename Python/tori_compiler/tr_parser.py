@@ -78,6 +78,11 @@ def make_unary_node(kind, right):
    
   return node
 
+def check_token(token, kind, value):
+  if token.kind != kind or token.value != value:
+    print("ERROR")
+    sys.exit()
+
 # ---
 # 各種構文の解析
 
@@ -91,9 +96,7 @@ def parse_if(tokens, n):
   node.cond = cond 
 
   token = get_current_token(tokens, n)
-  if token.kind != TR_Token_Kind.PUNCT or token.value != "{":
-    print("ERROR-PARSER-if")
-    sys.exit()
+  check_token(token, TR_Token_Kind.PUNCT, "{")
   token, n = get_next_token(tokens, n)
   
   if_stmts = [] 
@@ -117,9 +120,7 @@ def parse_if(tokens, n):
     else_stmt, n = parse_if(tokens, n)
     node.else_stmts = [else_stmt]
     return node, n
-  elif token.kind != TR_Token_Kind.PUNCT and token.value != "{":
-    print("ERROR-PARSER-else")
-    sys.exit()
+  check_token(token, TR_Token_Kind.PUNCT, "{")
 
   token, n = get_next_token(tokens, n)
   while True:
@@ -132,20 +133,57 @@ def parse_if(tokens, n):
   return node, n+1
  
 def parse_while(tokens, n):
-  token, n = get_next_token(tokens, n)
-
   node = TR_Node()
   node.kind = TR_Node_Kind.WHILE
+
+  token, n = get_next_token(tokens, n)
 
   cond, n = parse_expression(tokens, n)
   node.cond = cond
 
   token = get_current_token(tokens, n)
-  if token.kind != TR_Token_Kind.PUNCT and token.value != "{":
-    print("ERROR-PARSER-while")
-    sys.exit()
+  check_token(token, TR_Token_Kind.PUNCT, "{")
 
   token, n = get_next_token(tokens, n)
+  stmts = []
+  while True:
+    token = get_current_token(tokens, n)
+    if token.kind == TR_Token_Kind.PUNCT and token.value == "}": break
+    stmt, n = parse_statement(tokens, n)
+    stmts.append(stmt)
+
+  node.stmts = stmts
+  return node, n+1
+
+def parse_for(tokens, n):
+  node = TR_Node()
+  node.kind = TR_Node_Kind.FOR
+
+  token, n = get_next_token(tokens, n)
+  check_token(token, TR_Token_Kind.PUNCT, "(")
+
+  init, n = parse_expression(tokens, n+1)
+  node.init = init
+  token = get_current_token(tokens, n)
+  check_token(token, TR_Token_Kind.PUNCT, ",")
+  n += 1
+
+  cond, n = parse_expression(tokens, n)
+  node.cond = cond 
+  token = get_current_token(tokens, n)
+  check_token(token, TR_Token_Kind.PUNCT, ",")
+  n += 1
+
+  adv, n = parse_expression(tokens, n)
+  node.adv = adv
+
+  token = get_current_token(tokens, n)
+  check_token(token, TR_Token_Kind.PUNCT, ")")
+  n += 1
+  token = get_current_token(tokens, n)
+  check_token(token, TR_Token_Kind.PUNCT, "{")
+  n += 1
+
   stmts = []
   while True:
     token = get_current_token(tokens, n)
@@ -537,6 +575,8 @@ def parse_statement(tokens, n):
       tree, n = parse_if(tokens, n)
     elif token.value == "while": # while
       tree, n = parse_while(tokens, n)
+    elif token.value == "for": # for
+      tree, n = parse_for(tokens, n)
     else: # 変数
       tree, n = parse_expression(tokens, n)
 
