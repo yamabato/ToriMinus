@@ -17,6 +17,9 @@ def pretty_node(node):
     value = node.value.replace("\n", "\\n")
     return f"\"{value}\""
 
+  elif node_kind == TR_Node_Kind.LIST:
+    return f"[{', '.join([pretty_node(elem) for elem in node.elems])}]"
+
   elif node_kind == TR_Node_Kind.BOOL:
     return f"`{node.value}`"
 

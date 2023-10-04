@@ -388,6 +388,9 @@ def parse_factor(tokens, n):
   elif token.kind == TR_Token_Kind.STRING:
     node, n = parse_str(tokens, n)
 
+  elif token.kind == TR_Token_Kind.PUNCT and token.value == "[":
+    node, n = parse_list(tokens, n)
+
   elif token.kind == TR_Token_Kind.BOOL:
     node, n = parse_bool(tokens, n)
 
@@ -432,6 +435,24 @@ def parse_str(tokens, n):
   token = get_current_token(tokens, n)
   node.value = token.value
 
+  return node, n+1
+
+def parse_list(tokens, n):
+  node = TR_Node()
+  node.kind = TR_Node_Kind.LIST
+  
+  elems = []
+  n += 1
+  while True:
+    token = get_current_token(tokens, n)
+    if token.kind == TR_Token_Kind.PUNCT and token.value == "]": break
+    elem, n = parse_expression(tokens, n)
+    elems.append(elem)
+    
+    token = get_current_token(tokens, n)
+    if token.kind == TR_Token_Kind.PUNCT and token.value == ",": n += 1
+
+  node.elems = elems
   return node, n+1
 
 def parse_bool(tokens, n):
@@ -555,6 +576,8 @@ def parse_statement(tokens, n):
   if token.kind == TR_Token_Kind.INT or token.kind == TR_Token_Kind.DEC: # 数値
     tree, n = parse_expression(tokens, n)
   elif token.kind == TR_Token_Kind.STRING: # 文字列
+    tree, n = parse_expression(tokens, n)
+  elif token.kind == TR_Token_Kind.PUNCT and token.value == "[": # リスト 
     tree, n = parse_expression(tokens, n)
   elif token.kind == TR_Token_Kind.BOOL: # 真偽値 
     tree, n = parse_expression(tokens, n)
