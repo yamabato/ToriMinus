@@ -71,7 +71,6 @@ class LLVM_Generator:
     self.func_def_code = []
     self.global_var_dec_code = []
 
-    self.local_var_dec_code = []
     self.main_code = []
 
     self.local_var_number = 1
@@ -81,7 +80,7 @@ class LLVM_Generator:
     for tree in trees:
       self.gen_node_code(tree)
 
-    return self.func_def_code, self.global_var_dec_code, self.local_var_dec_code, self.main_code
+    return self.func_def_code, self.global_var_dec_code, self.main_code
 
   def gen_node_code(self, node):
     node_kind = node.kind
@@ -92,6 +91,9 @@ class LLVM_Generator:
 
     elif node_kind in ASSIGNMENT_OPERATORS:
       ret_var_name = self.gen_assign(node)
+
+    elif node_kind in ARITHMETIC_OPERATORS:
+      ret_var_name = self.gen_add(node)
 
     else:
       print("ERROR-EVAL:", node_kind)
@@ -106,29 +108,18 @@ class LLVM_Generator:
     self.local_var_number += 1
     return lvn
 
-  def get_global_var_number(self):
-    gvn = self.global_var_number
-    self.global_var_number += 1
-    return gvn
-
-  def gen_global_var_dec_code(self, var_ident, var_type, var_value=""):
+  def gen_global_var_dec_code(self, var_name, var_type, var_value=""):
     if var_value == "": var_value = INIT_VALUE[var_type]
-    self.global_var_dec_code.append(f"@{var_ident} = global {var_type} {var_value}")
-    return f"@{var_ident}"
+    self.global_var_dec_code.append(f"{var_name} = global {var_type} {var_value}")
+    return var_name
 
-  def gen_local_var_dec_code(self, var_ident, var_type):
-    self.local_var_dec_code.append(f"%{var_ident} = alloca {var_type}")
-    return f"%{var_ident}"
-
-  def gen_var_assign_code(self, var_name, var_type, var_value):
+  def gen_local_var_assign_code(self, var_name, var_type, var_value):
+    self.main_code.append(f"{var_name} = alloca {var_type}")
     self.main_code.append(f"store {var_type} {var_value}, {var_type}* {var_name}")
+    return var_name
 
-  def gen_tmp_var_assign_code(self, var_type, var_value):
-    lvn = self.get_local_var_number()
-    name = self.gen_local_var_dec_code(lvn, var_type)
-    self.gen_var_assign_code(name, var_type, var_value)
-
-    return name
+  def gen_store_value_code(self, var_name, var_type, var_value):
+    self.main_code.append(f"store {var_type} {var_value}, {var_type}* {var_name}")
 
   def gen_load_value_code(self, var_name, var_type):
     lvn = self.get_local_var_number()
@@ -140,7 +131,26 @@ class LLVM_Generator:
   # ---
 
   def gen_int(self, node):
-    name = self.gen_tmp_var_assign_code("i32", node.value)
+    lvn = self.get_local_var_number()
+    name = f"%{lvn}"
+    self.gen_local_var_assign_code(name, "i32", node.value)
+    loaded = self.gen_load_value_code(name, "i32")
+    return loaded 
+
+  def gen_add(self, node):
+    left = node.left
+    right = node.right
+
+    left_name = self.gen_node_code(left)
+    right_name = self.gen_node_code(right)
+
+    left_loaded = left_name
+    right_loaded = right_name
+   
+    lvn = self.get_local_var_number()
+    name = f"%{lvn}"
+    self.main_code.append(f"{name} = add i32 {left_loaded}, {right_loaded}")
+    
     return name
 
   def gen_assign(self, node):
@@ -149,26 +159,24 @@ class LLVM_Generator:
 
     value_var_name = self.gen_node_code(expr)
     if self.level == 0:
-      name = self.gen_global_var_dec_code(ident, "i32")
+      name = self.gen_global_var_dec_code(f"@{ident}", "i32")
     else:
       name = self.gen_local_var_dec_code(ident, "i32")
-    
-    value_loaded_var = self.gen_load_value_code(value_var_name, "i32")
-    self.gen_var_assign_code(name, "i32", value_loaded_var)
+
+    self.gen_store_value_code(name, "i32", value_var_name)
 
 # ---
 
 def tori_minus_gen_llvm(trees):
   generator = LLVM_Generator()
-  func_def_code, global_var_dec_code, local_var_dec_code, main_code = generator.gen(trees)
+  func_def_code, global_var_dec_code, main_code = generator.gen(trees)
 
   func_def = "\n".join(func_def_code)
   global_var_dec = "\n".join(global_var_dec_code)
-  local_var_dec = "\n  ".join(local_var_dec_code)
   main = "\n  ".join(main_code) + "\n  ret i32 0"
   
   print(func_def)
   print(global_var_dec)
-  print("define i32 @main() {\n  " + local_var_dec + "\n  " + main + "\n}")
+  print("define i32 @main() {\n  " + main + "\n}")
 
 # ---
