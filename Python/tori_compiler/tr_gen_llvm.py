@@ -11,6 +11,10 @@ from tr_show_tree import pretty_node
 # ---
 # 定数等の設定
 
+INIT_VALUE = {
+  "i32": "0"
+}
+
 UNARY_OPERATORS = [
   TR_Node_Kind.MINUS,
   TR_Node_Kind.NOT,
@@ -70,7 +74,7 @@ class LLVM_Generator:
     self.local_var_dec_code = []
     self.main_code = []
 
-    self.local_var_number = 0
+    self.local_var_number = 1
     self.global_var_number = 0
 
   def gen(self, trees):
@@ -82,12 +86,18 @@ class LLVM_Generator:
   def gen_node_code(self, node):
     node_kind = node.kind
     
+    ret_var_name = ""
     if node_kind == TR_Node_Kind.INT:
-      self.gen_int(node)
+      ret_var_name = self.gen_int(node)
+
+    elif node_kind in ASSIGNMENT_OPERATORS:
+      ret_var_name = self.gen_assign(node)
 
     else:
       print("ERROR-EVAL:", node_kind)
       sys.exit()
+
+    return ret_var_name
 
   # ---
   
@@ -101,20 +111,50 @@ class LLVM_Generator:
     self.global_var_number += 1
     return gvn
 
-  def gen_tmp_var_dec_code(self, var_type, var_value):
+  def gen_global_var_dec_code(self, var_ident, var_type, var_value=""):
+    if var_value == "": var_value = INIT_VALUE[var_type]
+    self.global_var_dec_code.append(f"@{var_ident} = global {var_type} {var_value}")
+    return f"@{var_ident}"
+
+  def gen_local_var_dec_code(self, var_ident, var_type):
+    self.local_var_dec_code.append(f"%{var_ident} = alloca {var_type}")
+    return f"%{var_ident}"
+
+  def gen_var_assign_code(self, var_name, var_type, var_value):
+    self.main_code.append(f"store {var_type} {var_value}, {var_type}* {var_name}")
+
+  def gen_tmp_var_assign_code(self, var_type, var_value):
     lvn = self.get_local_var_number()
-    self.local_var_dec_code.append(f"%{lvn} = alloca {var_type}")
-    self.main_code.append(f"store {var_type} {var_value}, {var_type}* %{lvn}")
+    name = self.gen_local_var_dec_code(lvn, var_type)
+    self.gen_var_assign_code(name, var_type, var_value)
 
-    return "%{lvn}"
+    return name
 
-  def append_main_code(self, code):
-    self.main_code.append(code)
+  def gen_load_value_code(self, var_name, var_type):
+    lvn = self.get_local_var_number()
+    name = f"%{lvn}"
+
+    self.main_code.append(f"{name} = load {var_type}, {var_type}* {var_name}")
+    return name
 
   # ---
 
   def gen_int(self, node):
-    name = self.gen_tmp_var_dec_code("i32", node.value)
+    name = self.gen_tmp_var_assign_code("i32", node.value)
+    return name
+
+  def gen_assign(self, node):
+    ident = node.var.value
+    expr = node.expr
+
+    value_var_name = self.gen_node_code(expr)
+    if self.level == 0:
+      name = self.gen_global_var_dec_code(ident, "i32")
+    else:
+      name = self.gen_local_var_dec_code(ident, "i32")
+    
+    value_loaded_var = self.gen_load_value_code(value_var_name, "i32")
+    self.gen_var_assign_code(name, "i32", value_loaded_var)
 
 # ---
 
@@ -125,7 +165,7 @@ def tori_minus_gen_llvm(trees):
   func_def = "\n".join(func_def_code)
   global_var_dec = "\n".join(global_var_dec_code)
   local_var_dec = "\n  ".join(local_var_dec_code)
-  main = "\n  ".join(main_code)
+  main = "\n  ".join(main_code) + "\n  ret i32 0"
   
   print(func_def)
   print(global_var_dec)

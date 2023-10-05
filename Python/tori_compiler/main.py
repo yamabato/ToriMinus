@@ -6,8 +6,7 @@ from tr_gen_llvm import tori_minus_gen_llvm
 from tr_show_tree import show_trees
 
 program = """
-1;
-2;
+x = 1;
 """
 
 tokens = tr_lexer(program)
