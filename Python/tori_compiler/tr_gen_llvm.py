@@ -95,6 +95,9 @@ class LLVM_Generator:
     elif node_kind in ARITHMETIC_OPERATORS:
       ret_var_name = self.gen_add(node)
 
+    elif node_kind in COMPARISON_OPERATORS:
+      ret_var_name = self.gen_compare(node)
+
     else:
       print("ERROR-EVAL:", node_kind)
       sys.exit()
@@ -147,12 +150,9 @@ class LLVM_Generator:
     left_name = self.gen_node_code(left)
     right_name = self.gen_node_code(right)
 
-    left_loaded = left_name
-    right_loaded = right_name
-   
     lvn = self.get_local_var_number()
     name = f"%{lvn}"
-    self.main_code.append(f"{name} = fadd double {left_loaded}, {right_loaded}")
+    self.main_code.append(f"{name} = fadd double {left_name}, {right_name}")
     
     return name
 
@@ -168,6 +168,20 @@ class LLVM_Generator:
 
     self.gen_store_value_code(name, "double", value_var_name)
 
+  def gen_compare(self, node):
+    left = node.left
+    right = node.right
+
+    left_name = self.gen_node_code(left)
+    right_name = self.gen_node_code(right)
+
+    lvn = self.get_local_var_number()
+    name = f"%{lvn}"
+    self.main_code.append(f"{name} = fcmp oeq {left_name}, {right_name}")
+
+    return name
+    
+ 
 # ---
 
 def tori_minus_gen_llvm(trees):
