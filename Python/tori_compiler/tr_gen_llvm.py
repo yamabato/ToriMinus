@@ -12,7 +12,7 @@ from tr_show_tree import pretty_node
 # 定数等の設定
 
 INIT_VALUE = {
-  "i32": "0"
+  "double": "0.000000e+00"
 }
 
 UNARY_OPERATORS = [
@@ -102,6 +102,9 @@ class LLVM_Generator:
     return ret_var_name
 
   # ---
+
+  def int_to_double(self, value):
+    return "{:e}".format(value)
   
   def get_local_var_number(self):
     lvn = self.local_var_number
@@ -133,8 +136,8 @@ class LLVM_Generator:
   def gen_int(self, node):
     lvn = self.get_local_var_number()
     name = f"%{lvn}"
-    self.gen_local_var_assign_code(name, "i32", node.value)
-    loaded = self.gen_load_value_code(name, "i32")
+    self.gen_local_var_assign_code(name, "double", self.int_to_double(int(node.value)))
+    loaded = self.gen_load_value_code(name, "double")
     return loaded 
 
   def gen_add(self, node):
@@ -149,7 +152,7 @@ class LLVM_Generator:
    
     lvn = self.get_local_var_number()
     name = f"%{lvn}"
-    self.main_code.append(f"{name} = add i32 {left_loaded}, {right_loaded}")
+    self.main_code.append(f"{name} = fadd double {left_loaded}, {right_loaded}")
     
     return name
 
@@ -159,11 +162,11 @@ class LLVM_Generator:
 
     value_var_name = self.gen_node_code(expr)
     if self.level == 0:
-      name = self.gen_global_var_dec_code(f"@{ident}", "i32")
+      name = self.gen_global_var_dec_code(f"@{ident}", "double")
     else:
-      name = self.gen_local_var_dec_code(ident, "i32")
+      name = self.gen_local_var_dec_code(ident, "double")
 
-    self.gen_store_value_code(name, "i32", value_var_name)
+    self.gen_store_value_code(name, "double", value_var_name)
 
 # ---
 
