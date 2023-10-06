@@ -69,7 +69,7 @@ class LLVM_Generator:
     self.level = 0
 
     self.func_def_code = []
-    self.global_var_dec_code = []
+    self.global_var_dec_code = {} 
 
     self.main_code = []
 
@@ -88,6 +88,9 @@ class LLVM_Generator:
     ret_var_name = ""
     if node_kind == TR_Node_Kind.INT:
       ret_var_name = self.gen_int(node)
+
+    elif node_kind == TR_Node_Kind.VAR:
+      ret_var_name = self.gen_var(node)
 
     elif node_kind in ASSIGNMENT_OPERATORS:
       ret_var_name = self.gen_assign(node)
@@ -116,7 +119,7 @@ class LLVM_Generator:
 
   def gen_global_var_dec_code(self, var_name, var_type, var_value=""):
     if var_value == "": var_value = INIT_VALUE[var_type]
-    self.global_var_dec_code.append(f"{var_name} = global {var_type} {var_value}")
+    self.global_var_dec_code[var_name] = f"global {var_type} {var_value}"
     return var_name
 
   def gen_local_var_assign_code(self, var_name, var_type, var_value):
@@ -156,6 +159,12 @@ class LLVM_Generator:
     
     return name
 
+  def gen_var(self, node):
+    var_name = node.value
+    name = self.gen_load_value_code(f"@{var_name}", "double")
+
+    return name
+
   def gen_assign(self, node):
     ident = node.var.value
     expr = node.expr
@@ -189,7 +198,7 @@ def tori_minus_gen_llvm(trees):
   func_def_code, global_var_dec_code, main_code = generator.gen(trees)
 
   func_def = "\n".join(func_def_code)
-  global_var_dec = "\n".join(global_var_dec_code)
+  global_var_dec = "\n".join([f"{var_name} = {dec}" for var_name, dec in global_var_dec_code.items()])
   main = "\n  ".join(main_code) + "\n  ret i32 0"
   
   print(func_def)
