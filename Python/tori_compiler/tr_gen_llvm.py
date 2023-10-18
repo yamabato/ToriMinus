@@ -68,7 +68,9 @@ class LLVM_Generator:
   def __init__(self, level=0):
     self.level = 0
 
-    self.func_def_code = []
+    self.func_def_code = {
+      "@printf": "declare dso_local i32 @printf(i8*, ...)"
+    } 
     self.global_var_dec_code = {} 
 
     self.main_code = []
@@ -189,7 +191,6 @@ class LLVM_Generator:
     self.main_code.append(f"{name} = fcmp oeq {left_name}, {right_name}")
 
     return name
-    
  
 # ---
 
@@ -197,7 +198,7 @@ def tori_minus_gen_llvm(trees):
   generator = LLVM_Generator()
   func_def_code, global_var_dec_code, main_code = generator.gen(trees)
 
-  func_def = "\n".join(func_def_code)
+  func_def = "\n".join(func_def_code.values())
   global_var_dec = "\n".join([f"{var_name} = {dec}" for var_name, dec in global_var_dec_code.items()])
   main = "\n  ".join(main_code) + "\n  ret i32 0"
   
