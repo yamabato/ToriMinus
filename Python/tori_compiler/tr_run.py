@@ -413,7 +413,7 @@ class Evaluator:
 
     if BOOL_VALUE_TABLE[cond.value]:
       for stmt in if_stmts: self.eval(stmt)
-    else:
+    elif else_stmts is not None:
       for stmt in else_stmts: self.eval(stmt)
 
   def eval_while(self, node):
