@@ -1,0 +1,13 @@
+N = 100;
+
+for(n=1, n<=N, n+=1){
+	if (n%15==0){
+    #print("FizzBuzz\n");
+	}else if (n%3==0){
+		#print("Fizz\n");
+	}else if (n%5==0){
+    #print("Buzz\n");
+	} else{
+    #print(n, "\n");
+	};
+};
