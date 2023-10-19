@@ -519,11 +519,32 @@ def parse_def_expressions(tokens, n):
 
   return exprs, n+1
 
+def parse_def_statements(tokens, n):
+  stmts = []
+
+  while n < len(tokens):
+    token = get_current_token(tokens, n)
+    if token.kind == TR_Token_Kind.PUNCT and token.value == "}": break
+ 
+    stmt, n = parse_statement(tokens, n)
+    stmts.append(stmt)
+
+    token = get_current_token(tokens, n)
+    if token.kind == TR_Token_Kind.PUNCT and token.value == "}": break
+    """
+    else:
+      print("ERROR-PARSER-def-stmts")
+      sys.exit()
+    """
+
+  return stmts, n+1
+
 def parse_define_function(tokens, n):
   node = TR_Node()
   node.kind = TR_Node_Kind.DEF
   node.args = []
   node.exprs = []
+  node.stmts = []
 
   n += 2
   args, n = parse_arg_list(tokens, n)
@@ -534,8 +555,10 @@ def parse_define_function(tokens, n):
   if token.kind == TR_Token_Kind.PUNCT and token.value == "}":
     n += 1
   elif token.kind == TR_Token_Kind.PUNCT and token.value == ",":
-    exprs, n = parse_def_expressions(tokens, n+1)
-    node.exprs = exprs
+    #exprs, n = parse_def_expressions(tokens, n+1)
+    stmts, n = parse_def_statements(tokens, n+1)
+    #node.exprs = exprs
+    node.stmts = stmts 
   else:
     print("ERROR-PARSER")
     sys.exit()

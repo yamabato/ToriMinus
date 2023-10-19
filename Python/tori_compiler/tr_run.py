@@ -362,19 +362,19 @@ class Evaluator:
 
   def eval_define_function(self, node):
     args = node.args
-    exprs = node.exprs
+    stmts = node.stmts
 
     ret = TR_Value()
     ret.kind = TR_Value_Kind.func_
     ret.args = args
-    ret.exprs = exprs
+    ret.stmts = stmts
 
     return ret
 
   def eval_call_function(self, node):
     func = self.eval(node.func)
     func_args = func.args
-    func_exprs = func.exprs
+    func_stmts = func.stmts
 
     args = node.args
 
@@ -390,8 +390,8 @@ class Evaluator:
       
     ret = TR_Value()
     ret.kind = TR_Value_Kind.non_
-    for expr in func_exprs:
-      ret = func_evaluator.eval(expr)
+    for stmt in func_stmts:
+      ret = func_evaluator.eval(stmt)
 
     return ret
 
