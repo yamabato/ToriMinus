@@ -74,3 +74,4 @@ class TR_Node_Kind(IntEnum):
   IF  = auto()
   WHILE = auto()
   FOR = auto()
+  BREAK = auto()

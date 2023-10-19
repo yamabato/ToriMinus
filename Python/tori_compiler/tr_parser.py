@@ -194,6 +194,11 @@ def parse_for(tokens, n):
   node.stmts = stmts
   return node, n+1
 
+def parse_break(tokens, n):
+	node = TR_Node()
+	node.kind = TR_Node_Kind.BREAK
+	return node, n+1
+
 def parse_expression(tokens, n):
   node, n = parse_assignment(tokens, n) 
 
@@ -644,6 +649,8 @@ def parse_statement(tokens, n):
       tree, n = parse_for(tokens, n)
     elif token.value == "return": # return
       tree, n = parse_return(tokens, n)
+    elif token.value == "break": # break 
+      tree, n = parse_break(tokens, n)
     else: # 変数
       tree, n = parse_expression(tokens, n)
 
