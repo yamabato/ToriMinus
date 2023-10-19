@@ -72,6 +72,8 @@ class Evaluator:
     self.env = {}
     self.level = level 
 
+    self.ret_value = None
+
     self.pyfunc_table = {
       "#if": self.tr_pf_if,
       "#while": self.tr_pf_while,
@@ -134,6 +136,9 @@ class Evaluator:
 
     elif node_kind == TR_Node_Kind.DEF:
       ret = self.eval_define_function(node)
+
+    elif node_kind == TR_Node_Kind.RETURN:
+      ret = self.eval_return(node)
 
     elif node_kind == TR_Node_Kind.CALL:
       ret = self.eval_call_function(node)
@@ -371,6 +376,17 @@ class Evaluator:
 
     return ret
 
+  def eval_return(self, node):
+    expr = node.expr
+
+    ret = TR_Value()
+    ret.kind = TR_Value_Kind.non_
+    if expr is not None:
+      ret = self.eval(expr)
+
+    self.ret_value = ret
+    return ret
+
   def eval_call_function(self, node):
     func = self.eval(node.func)
     func_args = func.args
@@ -391,8 +407,11 @@ class Evaluator:
     ret = TR_Value()
     ret.kind = TR_Value_Kind.non_
     for stmt in func_stmts:
-      print(stmt.kind)
       ret = func_evaluator.eval(stmt)
+
+      if func_evaluator.ret_value is not None:
+        ret = func_evaluator.ret_value
+        break
 
     return ret
 
