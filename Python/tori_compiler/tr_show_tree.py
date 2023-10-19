@@ -114,19 +114,22 @@ def pretty_node(node):
 
   elif node_kind == TR_Node_Kind.DEF:
     args = ", ".join([pretty_node(arg) for arg in node.args])
-    exprs = ", ".join([pretty_node(expr) for expr in node.exprs])
-    return f"({{({args}), ({exprs})}})"
+    stmts = ", ".join([pretty_node(stmt) for stmt in node.stmts])
+    return f"({{({args}), ({stmts})}})"
 
   elif node_kind == TR_Node_Kind.RETURN:
     expr = node.expr
-    return f"RETURN(pretty_node(expr))"
+    return f"RETURN({pretty_node(expr)})"
 
   elif node_kind == TR_Node_Kind.PYFUNC:
     funcs = ", ".join(node.funcs)
     return f"pyfunc {funcs};"
 
   elif node_kind == TR_Node_Kind.IF:
-    return f"if(({pretty_node(node.cond)}){{{';'.join([pretty_node(stmt) for stmt in node.if_stmts])}}}else({{{';'.join([pretty_node(stmt) for stmt in node.else_stmts])}}}))"
+    if node.else_stmts is not None:
+      return f"if(({pretty_node(node.cond)}){{{';'.join([pretty_node(stmt) for stmt in node.if_stmts])}}}else({{{';'.join([pretty_node(stmt) for stmt in node.else_stmts])}}}))"
+    else:
+      return f"if(({pretty_node(node.cond)}){{{';'.join([pretty_node(stmt) for stmt in node.if_stmts])}}})"
 
   elif node_kind == TR_Node_Kind.WHILE:
     return f"while(({pretty_node(node.cond)}){{{';'.join([pretty_node(stmt) for stmt in node.stmts])}}})"

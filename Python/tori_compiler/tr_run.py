@@ -97,6 +97,8 @@ class Evaluator:
   def eval(self, node):
     node_kind = node.kind
 
+    if self.ret_value is not None: return None
+
     ret = None
     if node_kind == TR_Node_Kind.INT:
       ret = self.eval_int(node)
@@ -427,6 +429,7 @@ class Evaluator:
     return ret
 
   def eval_if(self, node):
+    if self.ret_value is not None: return
     cond = self.eval(node.cond)
     if_stmts = node.if_stmts
     else_stmts = node.else_stmts
@@ -442,14 +445,18 @@ class Evaluator:
       stmts = node.stmts
 
       if BOOL_VALUE_TABLE[cond.value]:
-        for stmt in stmts: self.eval(stmt)
+        for stmt in stmts:
+          self.eval(stmt)
+          if self.ret_value is not None: return
       else: break
 
   def eval_for(self, node):
     self.eval(node.init)
     while True:
       stmts = node.stmts
-      for stmt in stmts: self.eval(stmt)
+      for stmt in stmts:
+        self.eval(stmt)
+        if self.ret_value is not None: return
 
       self.eval(node.adv)
       cond = self.eval(node.cond)

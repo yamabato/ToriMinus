@@ -560,7 +560,7 @@ def parse_define_function(tokens, n):
     #node.exprs = exprs
     node.stmts = stmts 
   else:
-    print("ERROR-PARSER")
+    print("ERROR-PARSER-def")
     sys.exit()
   
   return node, n
@@ -655,7 +655,7 @@ def parse_statement(tokens, n):
   if token.kind == TR_Token_Kind.PUNCT and token.value == ";":
     n += 1
   else:
-    print("ERROR-PARSER")
+    print("ERROR-PARSER-;")
     sys.exit()
 
   return tree, n
