@@ -391,6 +391,7 @@ class Evaluator:
     ret = TR_Value()
     ret.kind = TR_Value_Kind.non_
     for stmt in func_stmts:
+      print(stmt.kind)
       ret = func_evaluator.eval(stmt)
 
     return ret

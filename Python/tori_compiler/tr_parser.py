@@ -565,6 +565,25 @@ def parse_define_function(tokens, n):
   
   return node, n
 
+def parse_return(tokens, n):
+	node = TR_Node()
+	node.kind = TR_Node_Kind.RETURN
+
+	token, n = get_next_token(tokens, n)
+	if token.kind == TR_Token_Kind.PUNCT and token.value == ";":
+		return node, n
+
+	expr, n = parse_expression(tokens, n)
+	node.expr = expr
+
+	token = get_current_token(tokens, n)
+	if token.kind != TR_Token_Kind.PUNCT or token.value != ";":
+		print("ERROR-RETURN")
+		sys.exit()
+
+	return node, n
+
+
 def parse_pyfunc(tokens, n):
   n += 1
   
@@ -623,6 +642,8 @@ def parse_statement(tokens, n):
       tree, n = parse_while(tokens, n)
     elif token.value == "for": # for
       tree, n = parse_for(tokens, n)
+    elif token.value == "return": # return
+      tree, n = parse_return(tokens, n)
     else: # 変数
       tree, n = parse_expression(tokens, n)
 

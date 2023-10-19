@@ -36,6 +36,7 @@ class TR_Node_Kind(IntEnum):
   CALL = auto()
   PYFUNC_CALL = auto()
   DEF = auto()
+  RETURN = auto()
 
   ASSIGN = auto()
   ASSIGN_ADD = auto()
