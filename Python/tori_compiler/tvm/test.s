@@ -15,6 +15,10 @@ main:
 	push 80
 	call tvm_copy
 	call tvm_print
+	push 10
+	push 65
+	call tvm_char
+	call tvm_char
 	mov eax, 0
 	pop rbp
 	ret

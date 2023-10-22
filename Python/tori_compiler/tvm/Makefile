@@ -1,6 +1,6 @@
 .PHONY: test
 
-TVM_FUNCS := print.s clr.s copy.s
+TVM_FUNCS := print.s clr.s copy.s char.s
 
 tvm: $(TVM_FUNCS) 
 	gcc -W -r -nostdlib $(TVM_FUNCS) -o tvm.o
