@@ -1,7 +1,9 @@
 .PHONY: test
 
-tvm: print.s
-	gcc -W -r -nostdlib  print.s -o tvm.o
+TVM_FUNCS := print.s clr.s
+
+tvm: $(TVM_FUNCS) 
+	gcc -W -r -nostdlib $(TVM_FUNCS) -o tvm.o
 
 clean:
 	rm *.o
