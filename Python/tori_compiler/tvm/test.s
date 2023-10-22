@@ -13,7 +13,7 @@ main:
 	call tvm_clr
 	push 0
 	push 80
-	mov eax, 0
+	call tvm_copy
 	call tvm_print
 	mov eax, 0
 	pop rbp
