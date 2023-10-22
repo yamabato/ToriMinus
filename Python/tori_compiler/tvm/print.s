@@ -4,7 +4,7 @@
   .type tvm_print, @function
 tvm_print:
 	endbr64
-  pop r15						#スタックトップのrbpの値をr10に退避
+  pop r15						#スタックトップのrbpの値をr15に退避
   tvm_print_lp:
   pop rax
   mov edi, eax
