@@ -3,6 +3,7 @@
   .globl tvm_print
   .type tvm_print, @function
 tvm_print:
+	endbr64
   pop r15						#スタックトップのrbpの値をr10に退避
   tvm_print_lp:
   pop rax
