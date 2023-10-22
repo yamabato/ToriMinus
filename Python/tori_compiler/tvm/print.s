@@ -4,7 +4,7 @@
   .type tvm_print, @function
 tvm_print:
 	endbr64
-  pop r15						#スタックトップのrbpの値をr15に退避
+  pop r15						#スタックトップのripの値をr15に退避
   tvm_print_lp:
   pop rax
   mov edi, eax
@@ -13,5 +13,5 @@ tvm_print:
   call putchar@PLT
   jmp tvm_print_lp	#繰り返してputchar
   tvm_print_fin:
-  push r15					#rbpの値をスタックに戻す
+  push r15					#ripの値をスタックに戻す
   ret
